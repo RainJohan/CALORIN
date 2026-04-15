@@ -241,63 +241,484 @@
     line-height: 1.7;
   }
   #instructions span { color: var(--gold); font-weight: 700; }
+
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Rajdhani:wght@400;600;700&display=swap');
+
+  #voc-menu {
+    min-height: 580px;
+    background: #06040f;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 32px 20px;
+    width: 100%;
+    max-width: 760px;
+    border: 2px solid rgba(124,58,237,0.5);
+    box-shadow:
+      0 0 80px rgba(124,58,237,0.3),
+      0 0 0 1px rgba(212,160,23,0.1),
+      0 0 160px rgba(124,58,237,0.1),
+      inset 0 0 40px rgba(0,0,0,0.4);
+    margin-top: 40px;
+  }
+
+  #voc-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .voc-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .voc-badge {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    color: #6b50a0;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .voc-logo-ring {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    margin-bottom: 16px;
+  }
+  .voc-logo-ring svg {
+    position: absolute;
+    inset: 0;
+  }
+  .voc-logo-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+  }
+
+  .voc-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-align: center;
+    background: linear-gradient(135deg, #d4a017 0%, #f5c842 35%, #c0392b 70%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.15;
+    margin-bottom: 4px;
+  }
+  .voc-sub {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    letter-spacing: 5px;
+    color: #5a4080;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .voc-divider {
+    width: 320px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d4a01755, #c0392b55, transparent);
+    margin-bottom: 28px;
+  }
+
+  .voc-btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 280px;
+    margin-bottom: 28px;
+  }
+
+  .voc-btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 11px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.18s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .voc-btn-primary {
+    background: linear-gradient(135deg, #2a0f50 0%, #1a0830 100%);
+    border: 1.5px solid #d4a017aa;
+    color: #f5c842;
+    box-shadow: 0 0 20px rgba(212,160,23,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .voc-btn-primary:hover {
+    background: linear-gradient(135deg, #3a1870 0%, #2a1040 100%);
+    border-color: #f5c842;
+    box-shadow: 0 0 32px rgba(212,160,23,0.3);
+    transform: translateY(-1px);
+  }
+  .voc-btn-secondary {
+    background: rgba(10,5,22,0.85);
+    border: 1px solid rgba(124,58,237,0.35);
+    color: #9070c0;
+  }
+  .voc-btn-secondary:hover {
+    border-color: rgba(124,58,237,0.7);
+    color: #c084fc;
+    background: rgba(20,10,40,0.9);
+    transform: translateY(-1px);
+  }
+  .voc-btn-danger {
+    background: rgba(10,5,22,0.85);
+    border: 1px solid rgba(192,57,43,0.35);
+    color: #80403a;
+  }
+  .voc-btn-danger:hover {
+    border-color: rgba(192,57,43,0.7);
+    color: #f87171;
+    background: rgba(30,5,5,0.9);
+    transform: translateY(-1px);
+  }
+
+  .voc-roster {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 0;
+  }
+  .voc-char {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.55;
+    transition: opacity 0.2s;
+  }
+  .voc-char:hover { opacity: 1; }
+  .voc-char-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(10,5,22,0.9);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .voc-char-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: #6b50a0;
+    letter-spacing: 0.5px;
+  }
+
+  .voc-wave-info {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: rgba(6,4,15,0.85);
+    border: 1px solid rgba(124,58,237,0.25);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    color: #6b50a0;
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+    text-align: right;
+  }
+  .voc-wave-info span { color: #c084fc; font-weight: 700; }
+
+  .voc-corner-tl, .voc-corner-br {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    z-index: 3;
+  }
+  .voc-corner-tl { top: 10px; left: 10px; border-top: 1px solid #d4a01755; border-left: 1px solid #d4a01755; border-radius: 4px 0 0 0; }
+  .voc-corner-br { bottom: 10px; right: 10px; border-bottom: 1px solid #d4a01755; border-right: 1px solid #d4a01755; border-radius: 0 0 4px 0; }
+
+  #screen-how {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    max-width: 460px;
+    color: #e8e0f0;
+  }
+  .how-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 16px;
+    color: #d4a017;
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+  }
+  .how-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 13px;
+    width: 100%;
+  }
+  .how-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(124,58,237,0.2);
+    border: 1px solid rgba(124,58,237,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 11px;
+    color: #c084fc;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .how-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    line-height: 1.55;
+    color: #9080b0;
+  }
+  .how-text strong { color: #d4a017; font-weight: 700; }
+
+  .voc-lore-strip {
+    width: 100%;
+    background: rgba(10,5,22,0.7);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    font-style: italic;
+    color: #5a4080;
+    text-align: center;
+    letter-spacing: 0.3px;
+    line-height: 1.6;
+  }
+
+  .screen { display: none; }
+  .screen.active { display: flex; }
+
+  .hidden {
+    display: none !important;
+  }
+
+  #game-screen {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 </style>
 </head>
 <body>
 
-<!-- Background animated canvas -->
 <canvas id="bg-canvas"></canvas>
 
-<div class="title-wrap">
-  <h1>⛩ VEIL OF CURSES ⛩</h1>
-  <div class="subtitle">Jujutsu Kaisen — Tower Defense</div>
-  <div class="title-line"></div>
+<div id="voc-menu">
+  <canvas id="voc-canvas"></canvas>
+  <div class="voc-corner-tl"></div>
+  <div class="voc-corner-br"></div>
+
+  <div class="voc-wave-info">
+    <span>5</span> Curse Waves<br>Survive them all
+  </div>
+
+  <div id="screen-main" class="voc-content screen active">
+    <div class="voc-badge">Jujutsu Kaisen</div>
+
+    <div class="voc-logo-ring">
+      <svg viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="45" cy="45" r="40" stroke="url(#ringGrad)" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <circle cx="45" cy="45" r="32" stroke="rgba(192,57,43,0.3)" stroke-width="0.7"/>
+        <defs>
+          <linearGradient id="ringGrad" x1="0" y1="0" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#d4a017"/>
+            <stop offset="50%" stop-color="#7c3aed"/>
+            <stop offset="100%" stop-color="#c0392b"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="voc-logo-center">⛩</div>
+    </div>
+
+    <div class="voc-title">VEIL OF CURSES</div>
+    <div class="voc-sub">Tower Defense</div>
+    <div class="voc-divider"></div>
+
+    <div class="voc-btn-group">
+      <button class="voc-btn voc-btn-primary" onclick="openGame()">⚔ Begin Exorcism</button>
+      <button class="voc-btn voc-btn-secondary" onclick="showScreen('screen-how')">📜 How to Play</button>
+      <button class="voc-btn voc-btn-secondary" onclick="showScreen('screen-roster')">👁 Sorcerer Roster</button>
+      <button class="voc-btn voc-btn-danger" onclick="showScreen('screen-lore')">🩸 Cursed Lore</button>
+    </div>
+
+    <div class="voc-roster">
+      <div class="voc-char"><div class="voc-char-icon">🌸</div><div class="voc-char-name">Shoko</div></div>
+      <div class="voc-char"><div class="voc-char-icon">👊</div><div class="voc-char-name">Yuji</div></div>
+      <div class="voc-char"><div class="voc-char-icon">🛡</div><div class="voc-char-name">Todo</div></div>
+      <div class="voc-char"><div class="voc-char-icon">♾</div><div class="voc-char-name">Gojo</div></div>
+      <div class="voc-char"><div class="voc-char-icon">💀</div><div class="voc-char-name">Sukuna</div></div>
+    </div>
+  </div>
+
+  <div id="screen-how" class="voc-content screen">
+    <div class="how-title">⛩ How to Play</div>
+    <div class="how-row"><div class="how-num">I</div><div class="how-text"><strong>Select a Sorcerer</strong> from the shop at the top. Each costs Cursed Energy (✦ CE).</div></div>
+    <div class="how-row"><div class="how-num">II</div><div class="how-text"><strong>Click any grid cell</strong> to deploy them on that lane. Block Curses before they reach the barrier.</div></div>
+    <div class="how-row"><div class="how-num">III</div><div class="how-text"><strong>Collect CE orbs</strong> (✦) by clicking them — they fall from the sky and from Shoko. Don't let them expire!</div></div>
+    <div class="how-row"><div class="how-num">IV</div><div class="how-text"><strong>Survive all 5 Curse Waves.</strong> Higher waves spawn stronger Special Grade curses — plan your placement.</div></div>
+    <div class="how-row"><div class="how-num">V</div><div class="how-text"><strong>Sukuna</strong> (💀) detonates after 3 seconds, annihilating all curses in range — use him wisely.</div></div>
+    <div style="margin-top: 12px;">
+      <button class="voc-btn voc-btn-secondary" onclick="showScreen('screen-main')" style="width:100%; max-width:280px;">← Back</button>
+    </div>
+  </div>
+
+  <div id="screen-roster" class="voc-content screen">
+    <div class="how-title">👁 Sorcerer Roster</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:9px; width:100%; margin-bottom:16px;">
+      <div style="background:rgba(10,5,22,0.85);border:1px solid rgba(212,160,23,0.2);border-radius:9px;padding:11px 13px;">
+        <div style="font-size:22px;margin-bottom:5px;">🌸</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:11px;color:#d4a017;margin-bottom:3px;">Shoko</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:10px;color:#7c3aed;margin-bottom:5px;">Reverse CE · ✦ 50</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:11px;color:#6b50a0;line-height:1.5;">Generates cursed energy passively. Deploy early and often.</div>
+      </div>
+      <div style="background:rgba(10,5,22,0.85);border:1px solid rgba(192,57,43,0.2);border-radius:9px;padding:11px 13px;">
+        <div style="font-size:22px;margin-bottom:5px;">👊</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:11px;color:#d4a017;margin-bottom:3px;">Yuji</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:10px;color:#c0392b;margin-bottom:5px;">Divergent Fist · ✦ 100</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:11px;color:#6b50a0;line-height:1.5;">Fast, reliable lane fighter. Your backbone attacker.</div>
+      </div>
+      <div style="background:rgba(10,5,22,0.85);border:1px solid rgba(124,58,237,0.2);border-radius:9px;padding:11px 13px;">
+        <div style="font-size:22px;margin-bottom:5px;">🛡</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:11px;color:#d4a017;margin-bottom:3px;">Todo</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:10px;color:#7c3aed;margin-bottom:5px;">Boogie Woogie · ✦ 50</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:11px;color:#6b50a0;line-height:1.5;">High HP wall. Stalls curses while your team attacks.</div>
+      </div>
+      <div style="background:rgba(10,5,22,0.85);border:1px solid rgba(26,140,255,0.2);border-radius:9px;padding:11px 13px;">
+        <div style="font-size:22px;margin-bottom:5px;">♾</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:11px;color:#d4a017;margin-bottom:3px;">Gojo</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:10px;color:#1a8cff;margin-bottom:5px;">Infinity · ✦ 175</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:11px;color:#6b50a0;line-height:1.5;">Slows curses to 40% speed. Devastating in chokepoints.</div>
+      </div>
+    </div>
+    <div style="background:rgba(30,5,5,0.85);border:1px solid rgba(192,57,43,0.3);border-radius:9px;padding:11px 14px;display:flex;gap:12px;align-items:center;width:100%;box-sizing:border-box;margin-bottom:16px;">
+      <div style="font-size:26px;">💀</div>
+      <div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:11px;color:#c0392b;margin-bottom:2px;">Sukuna — Malevolent Shrine · ✦ 150</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:11px;color:#6b50a0;line-height:1.5;">Explodes in 3s, AoE radius 2.4 cells. One use — make it count.</div>
+      </div>
+    </div>
+    <button class="voc-btn voc-btn-secondary" onclick="showScreen('screen-main')" style="width:100%; max-width:280px;">← Back</button>
+  </div>
+
+  <div id="screen-lore" class="voc-content screen">
+    <div class="how-title" style="color:#c0392b;">🩸 Cursed Lore</div>
+    <div class="voc-lore-strip">
+      "A veil of cursed energy blankets Tokyo. The barrier holds — barely.<br>
+      Sorcerers of Jujutsu High stand at the threshold between humanity<br>and the hungry dark. The incursions have begun."
+    </div>
+    <div style="width:100%;display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+      <div style="background:rgba(10,5,22,0.85);border-left:2px solid #5a3a7e;border-radius:0 8px 8px 0;padding:9px 14px;">
+        <div style="font-family:'Rajdhani',sans-serif;font-size:11px;color:#7c3aed;font-weight:700;letter-spacing:1px;margin-bottom:3px;">👁 WEAK CURSE</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:11.5px;color:#6b50a0;line-height:1.5;">Residual curses born from human emotion. Numerous but fragile — don't underestimate a flood of them.</div>
+      </div>
+      <div style="background:rgba(10,5,22,0.85);border-left:2px solid #8b1a1a;border-radius:0 8px 8px 0;padding:9px 14px;">
+        <div style="font-family:'Rajdhani',sans-serif;font-size:11px;color:#c0392b;font-weight:700;letter-spacing:1px;margin-bottom:3px;">🦷 FINGER BEARER</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:11.5px;color:#6b50a0;line-height:1.5;">Curses that have consumed one of Sukuna's cursed fingers. Tougher, slower, and harder to put down.</div>
+      </div>
+      <div style="background:rgba(10,5,22,0.85);border-left:2px solid #1a3a5a;border-radius:0 8px 8px 0;padding:9px 14px;">
+        <div style="font-family:'Rajdhani',sans-serif;font-size:11px;color:#1a8cff;font-weight:700;letter-spacing:1px;margin-bottom:3px;">👺 SPECIAL GRADE</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:11.5px;color:#6b50a0;line-height:1.5;">Appears from Wave 3. Catastrophic threat level — a single Special Grade can devastate unprepared defenses.</div>
+      </div>
+    </div>
+    <button class="voc-btn voc-btn-danger" onclick="showScreen('screen-main')" style="width:100%; max-width:280px;">← Back to Barrier</button>
+  </div>
 </div>
 
-<div id="hud">
-  <div class="hud-pill" id="sun-display">✦ <span id="sun-val">150</span> CE</div>
-  <div class="hud-pill" id="wave-display">⚔ Curse <span id="wave-val">1</span> / 5</div>
-  <div class="hud-pill" id="lives-display">🏯 Barrier: <span id="lives-val">5</span></div>
-</div>
+<div id="game-screen" class="hidden">
+  <div class="title-wrap">
+    <h1>⛩ VEIL OF CURSES ⛩</h1>
+    <div class="subtitle">Jujutsu Kaisen — Tower Defense</div>
+    <div class="title-line"></div>
+  </div>
 
-<div id="shop">
-  <div class="plant-card" data-type="sunflower" onclick="selectPlant('sunflower')">
-    <span class="icon">🌸</span><span class="name">Shoko</span><span class="cost">✦ 50</span>
+  <div id="hud">
+    <div class="hud-pill" id="sun-display">✦ <span id="sun-val">150</span> CE</div>
+    <div class="hud-pill" id="wave-display">⚔ Curse <span id="wave-val">1</span> / 5</div>
+    <div class="hud-pill" id="lives-display">🏯 Barrier: <span id="lives-val">5</span></div>
   </div>
-  <div class="plant-card" data-type="peashooter" onclick="selectPlant('peashooter')">
-    <span class="icon">👊</span><span class="name">Yuji</span><span class="cost">✦ 100</span>
-  </div>
-  <div class="plant-card" data-type="wallnut" onclick="selectPlant('wallnut')">
-    <span class="icon">🛡</span><span class="name">Todo</span><span class="cost">✦ 50</span>
-  </div>
-  <div class="plant-card" data-type="snowpea" onclick="selectPlant('snowpea')">
-    <span class="icon">♾</span><span class="name">Gojo</span><span class="cost">✦ 175</span>
-  </div>
-  <div class="plant-card" data-type="cherry" onclick="selectPlant('cherry')">
-    <span class="icon">💀</span><span class="name">Sukuna</span><span class="cost">✦ 150</span>
-  </div>
-  <div class="plant-card" data-type="shovel" onclick="selectPlant('shovel')">
-    <span class="icon">🗡</span><span class="name">Remove</span><span class="cost" style="color:var(--teal)">free</span>
-  </div>
-</div>
 
-<div id="canvas-wrap"><canvas id="c"></canvas></div>
-<div id="msg">Select a sorcerer and click a cell to deploy!</div>
-<div id="btn-row">
-  <button class="ctrl" onclick="togglePause()">⏸ Pause</button>
-  <button class="ctrl" onclick="startGame()">↺ Restart</button>
-</div>
+  <div id="shop">
+    <div class="plant-card" data-type="sunflower" onclick="selectPlant('sunflower')">
+      <span class="icon">🌸</span><span class="name">Shoko</span><span class="cost">✦ 50</span>
+    </div>
+    <div class="plant-card" data-type="peashooter" onclick="selectPlant('peashooter')">
+      <span class="icon">👊</span><span class="name">Yuji</span><span class="cost">✦ 100</span>
+    </div>
+    <div class="plant-card" data-type="wallnut" onclick="selectPlant('wallnut')">
+      <span class="icon">🛡</span><span class="name">Todo</span><span class="cost">✦ 50</span>
+    </div>
+    <div class="plant-card" data-type="snowpea" onclick="selectPlant('snowpea')">
+      <span class="icon">♾</span><span class="name">Gojo</span><span class="cost">✦ 175</span>
+    </div>
+    <div class="plant-card" data-type="cherry" onclick="selectPlant('cherry')">
+      <span class="icon">💀</span><span class="name">Sukuna</span><span class="cost">✦ 150</span>
+    </div>
+    <div class="plant-card" data-type="shovel" onclick="selectPlant('shovel')">
+      <span class="icon">🗡</span><span class="name">Remove</span><span class="cost" style="color:var(--teal)">free</span>
+    </div>
+  </div>
 
-<div id="bottom">
-  <div class="lore-card"><span class="lname">🌸 Shoko</span><br><span class="lrole">Reverse CE · Healer</span><br>Generates cursed energy</div>
-  <div class="lore-card"><span class="lname">👊 Yuji</span><br><span class="lrole">Divergent Fist</span><br>Basic power attacker</div>
-  <div class="lore-card"><span class="lname">🛡 Todo</span><br><span class="lrole">Boogie Woogie</span><br>Tanky barrier block</div>
-  <div class="lore-card"><span class="lname">♾ Gojo</span><br><span class="lrole">Infinity · Slow</span><br>Slows curses</div>
-  <div class="lore-card"><span class="lname">💀 Sukuna</span><br><span class="lrole">Malevolent Shrine</span><br>Massive AoE in 3s</div>
-</div>
+  <div id="canvas-wrap"><canvas id="c"></canvas></div>
+  <div id="msg">Select a sorcerer and click a cell to deploy!</div>
 
-<div id="instructions">
-  <span>How to play:</span> Deploy sorcerers on the grid · Click ✦ CE orbs to collect · Survive all 5 Curse Waves
+  <div id="btn-row">
+    <button class="ctrl" onclick="togglePause()">⏸ Pause</button>
+    <button class="ctrl" onclick="restartGame()">↺ Restart</button>
+    <button class="ctrl" onclick="backToMenu()">← Menu</button>
+  </div>
+
+  <div id="bottom">
+    <div class="lore-card"><span class="lname">🌸 Shoko</span><br><span class="lrole">Reverse CE · Healer</span><br>Generates cursed energy</div>
+    <div class="lore-card"><span class="lname">👊 Yuji</span><br><span class="lrole">Divergent Fist</span><br>Basic power attacker</div>
+    <div class="lore-card"><span class="lname">🛡 Todo</span><br><span class="lrole">Boogie Woogie</span><br>Tanky barrier block</div>
+    <div class="lore-card"><span class="lname">♾ Gojo</span><br><span class="lrole">Infinity · Slow</span><br>Slows curses</div>
+    <div class="lore-card"><span class="lname">💀 Sukuna</span><br><span class="lrole">Malevolent Shrine</span><br>Massive AoE in 3s</div>
+  </div>
+
+  <div id="instructions">
+    <span>How to play:</span> Deploy sorcerers on the grid · Click ✦ CE orbs to collect · Survive all 5 Curse Waves
+  </div>
 </div>
 
 <script>
@@ -309,16 +730,10 @@
   const bx = bg.getContext('2d');
   let W, H, frame = 0;
 
-  // Rune characters (Japanese + occult symbols)
   const RUNES = ['咒', '術', '廻', '戦', '呪', '霊', '式', '神', '天', '刻', '縛', '伏', '黒', '閃', '蒼', '赫', '乾', '坤', '壊', '葬', '∞', '⛩', '卍', '彡', '⚡', '◈', '✦', '⟁', '⬡', '⎊'];
-
-  // Floating rune particles
   const runes = [];
-  // Drifting energy orbs
   const orbs = [];
-  // Curse veins (jagged lightning-style lines)
   const veins = [];
-  // Eye of curses
   const eyes = [];
 
   function resize() {
@@ -398,7 +813,6 @@
     eyes[eyes.length-1].maxLife = eyes[eyes.length-1].life;
   }
 
-  // Seed initial particles
   function seed() {
     for (let i = 0; i < 60; i++) spawnRune();
     for (let i = 0; i < 20; i++) spawnOrb();
@@ -411,14 +825,12 @@
     bx.save();
     bx.globalAlpha = alpha;
 
-    // Outer glow
     const gr = bx.createRadialGradient(x, y, 0, x, y, r * 2.5);
     gr.addColorStop(0, `rgba(${color},0.18)`);
     gr.addColorStop(1, 'transparent');
     bx.fillStyle = gr;
     bx.beginPath(); bx.arc(x, y, r * 2.5, 0, Math.PI * 2); bx.fill();
 
-    // Eye white (elongated)
     bx.save();
     bx.translate(x, y);
     bx.scale(1.8, 1);
@@ -431,13 +843,11 @@
     bx.stroke();
     bx.restore();
 
-    // Pupil
     bx.beginPath();
     bx.ellipse(x + pupilX * r * 0.25, y + pupilY * r * 0.25, r * 0.28, r * 0.45, 0, 0, Math.PI * 2);
     bx.fillStyle = `rgba(${color},0.55)`;
     bx.fill();
 
-    // Iris ring
     bx.beginPath();
     bx.arc(x + pupilX * r * 0.15, y + pupilY * r * 0.15, r * 0.44, 0, Math.PI * 2);
     bx.strokeStyle = `rgba(${color},0.28)`;
@@ -451,7 +861,6 @@
     frame++;
     bx.clearRect(0, 0, W, H);
 
-    // ---- deep background gradient ----
     const bgGrad = bx.createRadialGradient(W * 0.5, H * 0.3, 0, W * 0.5, H * 0.5, W * 0.8);
     bgGrad.addColorStop(0,   'rgba(40,12,80,0.55)');
     bgGrad.addColorStop(0.4, 'rgba(15,5,30,0.65)');
@@ -459,7 +868,6 @@
     bx.fillStyle = bgGrad;
     bx.fillRect(0, 0, W, H);
 
-    // ---- left-side red curse pillar ----
     const lp = bx.createLinearGradient(0, 0, W * 0.22, 0);
     lp.addColorStop(0,   'rgba(140,20,20,0.13)');
     lp.addColorStop(0.6, 'rgba(192,57,43,0.06)');
@@ -467,7 +875,6 @@
     bx.fillStyle = lp;
     bx.fillRect(0, 0, W * 0.22, H);
 
-    // ---- right-side purple pillar ----
     const rp = bx.createLinearGradient(W * 0.78, 0, W, 0);
     rp.addColorStop(0,   'transparent');
     rp.addColorStop(0.4, 'rgba(100,40,200,0.06)');
@@ -475,7 +882,6 @@
     bx.fillStyle = rp;
     bx.fillRect(W * 0.78, 0, W * 0.22, H);
 
-    // ---- top atmospheric glow ----
     const tg = bx.createRadialGradient(W * 0.5, 0, 0, W * 0.5, 0, H * 0.5);
     tg.addColorStop(0,   'rgba(124,58,237,0.1)');
     tg.addColorStop(0.5, 'rgba(80,20,140,0.05)');
@@ -483,10 +889,8 @@
     bx.fillStyle = tg;
     bx.fillRect(0, 0, W, H * 0.5);
 
-    // ---- subtle hex grid pattern ----
     drawHexGrid();
 
-    // ---- curse veins ----
     if (frame % 90 === 0 && veins.length < 12) spawnVein();
     for (let i = veins.length - 1; i >= 0; i--) {
       const v = veins[i];
@@ -507,7 +911,6 @@
       if (v.life <= 0) veins.splice(i, 1);
     }
 
-    // ---- floating orbs ----
     if (frame % 25 === 0 && orbs.length < 30) spawnOrb();
     for (let i = orbs.length - 1; i >= 0; i--) {
       const o = orbs[i];
@@ -529,7 +932,6 @@
       if (o.life <= 0) orbs.splice(i, 1);
     }
 
-    // ---- floating rune glyphs ----
     if (frame % 8 === 0 && runes.length < 80) spawnRune();
     bx.textAlign = 'center'; bx.textBaseline = 'middle';
     for (let i = runes.length - 1; i >= 0; i--) {
@@ -548,7 +950,6 @@
       if (r.life <= 0) runes.splice(i, 1);
     }
 
-    // ---- curse eyes ----
     if (frame % 150 === 0 && eyes.length < 8) spawnEye();
     for (let i = eyes.length - 1; i >= 0; i--) {
       const e = eyes[i];
@@ -562,14 +963,12 @@
       if (e.life <= 0) eyes.splice(i, 1);
     }
 
-    // ---- bottom fog ----
     const fog = bx.createLinearGradient(0, H * 0.75, 0, H);
     fog.addColorStop(0, 'transparent');
     fog.addColorStop(1, 'rgba(6,4,15,0.5)');
     bx.fillStyle = fog;
     bx.fillRect(0, H * 0.75, W, H * 0.25);
 
-    // ---- scanline texture (very subtle) ----
     bx.fillStyle = 'rgba(0,0,0,0.025)';
     for (let y = 0; y < H; y += 3) {
       bx.fillRect(0, y, W, 1);
@@ -593,7 +992,6 @@
       for (let col = -1; col < cols; col++) {
         const cx = col * w + (row % 2 === 0 ? w / 2 : 0);
         const cy = row * h * 0.75;
-        // Pulse some hexes
         const dist = Math.sqrt((cx - W/2)**2 + (cy - H/2)**2);
         const wave = Math.sin(dist * 0.012 - t * 3) * 0.5 + 0.5;
         if (wave < 0.3) continue;
@@ -659,11 +1057,26 @@ function initState() {
   };
 }
 
+function initializeGame() {
+  initState();
+  updateHUD();
+  document.getElementById('wave-val').textContent = 1;
+  document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
+  setMsg('Select a sorcerer and click a cell to deploy!');
+  const pauseBtn = document.querySelector('#btn-row .ctrl');
+  if (pauseBtn) pauseBtn.textContent = '⏸ Pause';
+}
+
+function restartGame() {
+  initializeGame();
+}
+
 function selectPlant(type) {
   if (state.over) return;
   state.selected = type;
   document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
-  document.querySelector(`[data-type="${type}"]`).classList.add('selected');
+  const card = document.querySelector(`#shop [data-type="${type}"]`);
+  if (card) card.classList.add('selected');
 }
 
 canvas.addEventListener('click', e => {
@@ -826,15 +1239,12 @@ function drawRoundRect(x, y, w, h, r) {
   ctx.closePath();
 }
 
-/* === GAME-CANVAS BACKGROUND: enhanced lane art === */
 function drawGameBackground() {
   const f = state.frame;
 
-  // Dark base fill
   ctx.fillStyle = '#08051a';
   ctx.fillRect(0, 0, W, H);
 
-  // Lane rows with richer colors
   for (let r = 0; r < ROWS; r++) {
     ctx.fillStyle = LANE_COLORS[r];
     ctx.fillRect(0, r*CELL+TOP_PAD, W, CELL);
@@ -842,7 +1252,6 @@ function drawGameBackground() {
     ctx.fillRect(0, r*CELL+TOP_PAD, W, CELL);
   }
 
-  // Animated lane energy pulses (horizontal glow sweeps)
   for (let r = 0; r < ROWS; r++) {
     const speed = 0.003 + r * 0.0008;
     const pos = ((f * speed + r * 0.2) % 1.4) - 0.2;
@@ -856,7 +1265,6 @@ function drawGameBackground() {
     ctx.fillRect(0, r*CELL+TOP_PAD, W, CELL);
   }
 
-  // Subtle hex grid overlay on game canvas
   ctx.save();
   const hexSize = 22;
   const cos30 = Math.sqrt(3) / 2;
@@ -881,235 +1289,381 @@ function drawGameBackground() {
   }
   ctx.restore();
 
-  // Lane dividers with glow
-  for (let r = 0; r < ROWS; r++) {
-    ctx.fillStyle = 'rgba(255,255,255,0.025)';
-    ctx.fillRect(0, r*CELL+TOP_PAD, W, 1);
-    ctx.fillRect(0, (r+1)*CELL+TOP_PAD-1, W, 1);
+  const laneFog = ctx.createLinearGradient(0, TOP_PAD, 0, H);
+  laneFog.addColorStop(0, 'rgba(255,255,255,0.02)');
+  laneFog.addColorStop(1, 'rgba(0,0,0,0.18)');
+  ctx.fillStyle = laneFog;
+  ctx.fillRect(0, TOP_PAD, W, H - TOP_PAD);
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 1;
+  for (let c = 0; c <= COLS; c++) {
+    ctx.beginPath();
+    ctx.moveTo(c*CELL, TOP_PAD);
+    ctx.lineTo(c*CELL, H);
+    ctx.stroke();
+  }
+  for (let r = 0; r <= ROWS; r++) {
+    ctx.beginPath();
+    ctx.moveTo(0, r*CELL+TOP_PAD);
+    ctx.lineTo(W, r*CELL+TOP_PAD);
+    ctx.stroke();
   }
 
-  // Cell grid
-  for (let r = 0; r < ROWS; r++) {
-    for (let c2 = 0; c2 < COLS; c2++) {
-      ctx.strokeStyle = 'rgba(124,58,237,0.07)';
-      ctx.lineWidth = 0.5;
-      ctx.strokeRect(c2*CELL, r*CELL+TOP_PAD, CELL, CELL);
+  for (let c = 0; c < COLS; c++) {
+    for (let r = 0; r < ROWS; r++) {
+      const x = c * CELL;
+      const y = r * CELL + TOP_PAD;
+      const grad = ctx.createLinearGradient(x, y, x, y + CELL);
+      grad.addColorStop(0, 'rgba(255,255,255,0.015)');
+      grad.addColorStop(1, 'rgba(0,0,0,0.03)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(x + 1, y + 1, CELL - 2, CELL - 2);
     }
   }
 
-  // Floating rune glyphs drawn INTO the game grid (very faint)
-  const RUNES2 = ['咒','術','廻','∞','⛩','卍','✦'];
-  ctx.save();
-  ctx.font = '13px serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  for (let i = 0; i < 8; i++) {
-    const x2 = ((f * (0.2 + i * 0.05) + i * 77) % W);
-    const y2 = ((f * (0.08 + i * 0.03) + i * 40) % (ROWS * CELL)) + TOP_PAD;
-    const a = 0.03 + Math.sin(f * 0.04 + i) * 0.015;
-    ctx.globalAlpha = Math.max(0, a);
-    ctx.fillStyle = i % 2 === 0 ? '#c084fc' : '#f87171';
-    ctx.fillText(RUNES2[i % RUNES2.length], x2, y2);
-  }
-  ctx.restore();
-
-  // Right-edge danger zone glow
-  const grad = ctx.createLinearGradient(W - 25, 0, W, 0);
-  grad.addColorStop(0, 'transparent');
-  grad.addColorStop(1, 'rgba(212,160,23,0.10)');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, TOP_PAD, W, ROWS*CELL);
-
-  // Left-edge spawn glow (where curses come from)
-  const leftGrad = ctx.createLinearGradient(W, 0, W - 30, 0);
-  leftGrad.addColorStop(0, 'transparent');
-  leftGrad.addColorStop(1, 'rgba(192,57,43,0.08)');
-  ctx.fillStyle = leftGrad;
-  ctx.fillRect(W - 30, TOP_PAD, 30, ROWS * CELL);
-
-  // Top bar
-  ctx.fillStyle = '#060314';
-  ctx.fillRect(0, 0, W, TOP_PAD);
-  ctx.fillStyle = 'rgba(212,160,23,0.35)';
-  ctx.fillRect(0, TOP_PAD, W, 1);
+  ctx.fillStyle = 'rgba(200,160,80,0.05)';
+  ctx.fillRect(0, TOP_PAD, 14, H - TOP_PAD);
 }
 
-function draw() {
+function drawPlant(p) {
+  const x = p.col*CELL, y = p.row*CELL + TOP_PAD;
+  const cx = x + CELL/2, cy = y + CELL/2;
+  const def = PLANTS[p.type];
+  const icon = CHAR_ICONS[p.type];
+
+  const glow = ctx.createRadialGradient(cx, cy, 4, cx, cy, 34);
+  glow.addColorStop(0, 'rgba(255,255,255,0.08)');
+  glow.addColorStop(1, 'transparent');
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 34, 0, Math.PI*2);
+  ctx.fill();
+
+  const ring = ctx.createLinearGradient(x + 10, y + 10, x + CELL - 10, y + CELL - 10);
+  ring.addColorStop(0, def.color + '88');
+  ring.addColorStop(1, 'rgba(255,255,255,0.08)');
+  ctx.strokeStyle = ring;
+  ctx.lineWidth = 2;
+  drawRoundRect(x + 12, y + 12, CELL - 24, CELL - 24, 14);
+  ctx.stroke();
+
+  ctx.save();
+  ctx.shadowBlur = 14;
+  ctx.shadowColor = def.color;
+  ctx.font = '34px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(icon, cx, cy + 1);
+  ctx.restore();
+
+  ctx.fillStyle = 'rgba(255,255,255,0.03)';
+  ctx.beginPath();
+  ctx.arc(cx - 8, cy - 10, 6, 0, Math.PI * 2);
+  ctx.fill();
+
+  const barW = CELL - 18;
+  ctx.fillStyle = 'rgba(0,0,0,0.45)';
+  ctx.fillRect(x + 9, y + CELL - 10, barW, 5);
+  ctx.fillStyle = '#18d26e';
+  ctx.fillRect(x + 9, y + CELL - 10, barW * (p.hp / p.maxHp), 5);
+
+  if (p.type === 'cherry' && p.explodeTimer > 0) {
+    ctx.fillStyle = '#ff8080';
+    ctx.font = '10px Rajdhani';
+    ctx.textAlign = 'center';
+    ctx.fillText((p.explodeTimer/30).toFixed(1) + 's', cx, y + 14);
+  }
+}
+
+function drawZombie(z) {
+  const x = z.x, y = z.row*CELL + TOP_PAD + CELL/2;
+  const bob = Math.sin(state.frame*0.12 + z.x*0.03) * 2.2;
+  const pulse = 0.5 + 0.5 * Math.sin(state.frame*0.08 + z.x*0.02);
+
+  ctx.save();
+  ctx.shadowBlur = 18 + pulse * 8;
+  ctx.shadowColor = z.cdef.glow;
+  ctx.font = '34px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(z.cdef.emoji, x, y + bob);
+  ctx.restore();
+
+  const aura = ctx.createRadialGradient(x, y, 2, x, y, 26);
+  aura.addColorStop(0, z.cdef.glow + '55');
+  aura.addColorStop(1, 'transparent');
+  ctx.fillStyle = aura;
+  ctx.beginPath();
+  ctx.arc(x, y, 26, 0, Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(x-22, y-30, 44, 5);
+  ctx.fillStyle = z.slowTimer > 0 ? '#8fd3ff' : '#ff7070';
+  ctx.fillRect(x-22, y-30, 44*(z.hp/z.maxHp), 5);
+
+  ctx.font = '9px Rajdhani';
+  ctx.fillStyle = 'rgba(255,255,255,0.7)';
+  ctx.fillText(z.cdef.label, x, y + 28);
+}
+
+function drawBullet(b) {
+  ctx.save();
+  ctx.shadowBlur = 12;
+  ctx.shadowColor = b.slow ? '#8fd3ff' : '#ff9b9b';
+  ctx.fillStyle = b.slow ? '#cfeaff' : '#ffb0b0';
+  ctx.beginPath();
+  ctx.arc(b.x, b.y, 5, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSun(s) {
+  const pulse = 1 + Math.sin(state.frame*0.12 + s.x) * 0.06;
+  ctx.save();
+  ctx.translate(s.x, s.y);
+  ctx.scale(pulse, pulse);
+  ctx.shadowBlur = 18;
+  ctx.shadowColor = '#f5c842';
+  ctx.fillStyle = '#f5c842';
+  ctx.beginPath();
+  ctx.arc(0, 0, 10, 0, Math.PI*2);
+  ctx.fill();
+  ctx.font = '16px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#fff5c0';
+  ctx.fillText('✦', 0, 0);
+  ctx.restore();
+}
+
+function drawWaveBanner() {
+  if (state.betweenWaves && state.betweenTimer > 120) {
+    const alpha = Math.min(1, (200 - state.betweenTimer) / 20);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = 'rgba(10,5,22,0.82)';
+    drawRoundRect(W/2 - 120, 12, 240, 42, 12);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(212,160,23,0.4)';
+    ctx.lineWidth = 1.2;
+    drawRoundRect(W/2 - 120, 12, 240, 42, 12);
+    ctx.stroke();
+    ctx.fillStyle = '#f5c842';
+    ctx.font = '700 16px Rajdhani';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`Wave ${state.wave + 1} Approaches...`, W/2, 33);
+    ctx.restore();
+  }
+}
+
+function render() {
   ctx.clearRect(0, 0, W, H);
 
   if (state.shakeTimer > 0) {
-    const s = Math.sin(state.shakeTimer * 1.8) * 4 * (state.shakeTimer / 18);
-    ctx.save(); ctx.translate(s, s * 0.5);
+    ctx.save();
+    ctx.translate((Math.random()-0.5)*6, (Math.random()-0.5)*6);
   }
 
   drawGameBackground();
 
-  // Plants
-  state.plants.forEach(p => {
-    const def = PLANTS[p.type];
-    const x = p.col*CELL+8, y = p.row*CELL+TOP_PAD+8, s = CELL-16;
-    const cx2 = x+s/2, cy2 = y+s/2;
-
-    ctx.save(); ctx.globalAlpha = 0.28;
-    const ac = { sunflower:'#d4769a', peashooter:'#c0392b', wallnut:'#7c3aed', snowpea:'#1a8cff', cherry:'#ff4444' };
-    const rg = ctx.createRadialGradient(cx2, cy2, 0, cx2, cy2, s*0.75);
-    rg.addColorStop(0, ac[p.type]||'#888'); rg.addColorStop(1, 'transparent');
-    ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(cx2, cy2, s*0.8, 0, Math.PI*2); ctx.fill(); ctx.restore();
-
-    if (p.type === 'cherry' && p.explodeTimer > 0) {
-      const pulse = Math.sin(state.frame*0.3)*0.3+0.7;
-      ctx.save(); ctx.globalAlpha = pulse*0.45; ctx.strokeStyle = '#ff4444'; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.arc(cx2, cy2, s*0.55+Math.sin(state.frame*0.5)*4, 0, Math.PI*2); ctx.stroke(); ctx.restore();
-    }
-
-    ctx.fillStyle = def.color+'22'; drawRoundRect(x, y, s, s, 9); ctx.fill();
-    ctx.strokeStyle = def.color+'88'; ctx.lineWidth = 1.5; ctx.stroke();
-
-    if (p.type === 'snowpea') {
-      ctx.save(); ctx.globalAlpha = 0.12+Math.sin(state.frame*0.08)*0.07;
-      const inf = ctx.createLinearGradient(x, y, x+s, y+s);
-      inf.addColorStop(0,'#1a8cff'); inf.addColorStop(0.5,'#ffffff'); inf.addColorStop(1,'#1a8cff');
-      ctx.fillStyle = inf; drawRoundRect(x, y, s, s, 9); ctx.fill(); ctx.restore();
-    }
-
-    ctx.font = '28px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(CHAR_ICONS[p.type]||'?', cx2, cy2-2);
-
-    ctx.font = 'bold 8px Rajdhani,sans-serif'; ctx.fillStyle = 'rgba(255,255,255,0.7)';
-    ctx.fillText(def.label||'', cx2, y+s-9);
-
-    const hpR = Math.max(0, p.hp/p.maxHp);
-    ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(x, y+s+2, s, 4);
-    ctx.fillStyle = hpR > 0.5 ? '#22c55e' : hpR > 0.25 ? '#eab308' : '#ef4444';
-    ctx.fillRect(x, y+s+2, s*hpR, 4);
-  });
-
-  // Bullets
-  state.bullets.forEach(b => {
-    ctx.save();
-    if (b.slow) {
-      const rg = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, 8);
-      rg.addColorStop(0,'#ffffff'); rg.addColorStop(0.4,'#1a8cff'); rg.addColorStop(1,'rgba(26,140,255,0)');
-      ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(b.x, b.y, 8, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(b.x, b.y, 3, 0, Math.PI*2); ctx.fill();
-    } else {
-      const rg = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, 7);
-      rg.addColorStop(0,'#fff'); rg.addColorStop(0.3,'#ff6060'); rg.addColorStop(1,'rgba(192,57,43,0)');
-      ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(b.x, b.y, 7, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(b.x, b.y, 2.5, 0, Math.PI*2); ctx.fill();
-    }
-    ctx.restore();
-  });
-
-  // Curses
-  state.zombies.forEach(z => {
-    const cx = z.x, cy = z.row*CELL+TOP_PAD+CELL/2, cd = z.cdef;
-    const sz = cd === CURSE_TYPES[2] ? 37 : cd === CURSE_TYPES[1] ? 33 : 28;
-
-    if (z.slowTimer > 0) {
-      ctx.save(); ctx.globalAlpha = 0.3;
-      const sg = ctx.createRadialGradient(cx, cy, 0, cx, cy, sz+9);
-      sg.addColorStop(0,'#1a8cff'); sg.addColorStop(1,'transparent');
-      ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(cx, cy, sz+9, 0, Math.PI*2); ctx.fill(); ctx.restore();
-    }
-
-    ctx.save(); ctx.globalAlpha = 0.2+Math.sin(state.frame*0.07+z.row)*0.05;
-    const aura = ctx.createRadialGradient(cx, cy, 0, cx, cy, sz*1.2);
-    aura.addColorStop(0, cd.glow); aura.addColorStop(1,'transparent');
-    ctx.fillStyle = aura; ctx.beginPath(); ctx.arc(cx, cy, sz*1.2, 0, Math.PI*2); ctx.fill(); ctx.restore();
-
-    ctx.fillStyle = cd.color+'cc'; drawRoundRect(cx-sz/2, cy-sz/2, sz, sz, 7); ctx.fill();
-    ctx.strokeStyle = cd.glow+'cc'; ctx.lineWidth = 1.5; ctx.stroke();
-
-    ctx.font = (sz-4)+'px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(cd.emoji, cx, cy);
-
-    ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillRect(cx-sz/2, cy+sz/2+2, sz, 4);
-    ctx.fillStyle = cd.glow; ctx.fillRect(cx-sz/2, cy+sz/2+2, sz*Math.max(0,z.hp/z.maxHp), 4);
-
-    if (z.cdef === CURSE_TYPES[2]) {
-      ctx.font = 'bold 7px Rajdhani,sans-serif'; ctx.fillStyle = '#1a8cff';
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText('SPECIAL', cx, cy-sz/2-6);
-    }
-  });
-
-  // CE Drops
-  state.sunDrops.forEach(s => {
-    ctx.save(); ctx.globalAlpha = Math.min(1, s.timer/30);
-    const sg = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 20);
-    sg.addColorStop(0,'rgba(212,160,23,0.4)'); sg.addColorStop(1,'transparent');
-    ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(s.x, s.y, 20, 0, Math.PI*2); ctx.fill();
-    ctx.font = '20px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('✦', s.x, s.y); ctx.restore();
-  });
-
-  // Between waves overlay
-  if (state.betweenWaves) {
-    ctx.fillStyle = 'rgba(6,3,18,0.80)'; ctx.fillRect(0, 0, W, H);
-    // Decorative rings
-    ctx.save();
-    ctx.strokeStyle = 'rgba(212,160,23,0.15)'; ctx.lineWidth = 0.8;
-    ctx.beginPath(); ctx.arc(W/2, H/2, 90, 0, Math.PI*2); ctx.stroke();
-    ctx.strokeStyle = 'rgba(124,58,237,0.12)'; ctx.lineWidth = 0.5;
-    ctx.beginPath(); ctx.arc(W/2, H/2, 70, 0, Math.PI*2); ctx.stroke();
-    ctx.restore();
-    ctx.strokeStyle = 'rgba(212,160,23,0.3)'; ctx.lineWidth = 1;
-    ctx.strokeRect(W/2-200, H/2-24, 400, 48);
-    ctx.font = 'bold 17px Cinzel Decorative,serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#d4a017'; ctx.fillText(`— Curse ${state.wave} Exorcised —`, W/2, H/2-7);
-    ctx.font = '13px Rajdhani,sans-serif'; ctx.fillStyle = '#9080b0';
-    ctx.fillText('Prepare for the next incursion...', W/2, H/2+13);
-  }
-
-  // Game over overlay
-  if (state.over) {
-    ctx.fillStyle = 'rgba(6,3,18,0.88)'; ctx.fillRect(0, 0, W, H);
-    // Decorative circles
-    ctx.save();
-    const oc = state.won ? '212,160,23' : '192,57,43';
-    ctx.strokeStyle = `rgba(${oc},0.2)`; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.arc(W/2, H/2, 110, 0, Math.PI*2); ctx.stroke();
-    ctx.strokeStyle = `rgba(${oc},0.1)`; ctx.lineWidth = 0.5;
-    ctx.beginPath(); ctx.arc(W/2, H/2, 90, 0, Math.PI*2); ctx.stroke();
-    ctx.restore();
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    if (state.won) {
-      ctx.font = 'bold 26px Cinzel Decorative,serif'; ctx.fillStyle = '#d4a017';
-      ctx.fillText('⛩ MISSION COMPLETE ⛩', W/2, H/2-20);
-      ctx.font = '14px Rajdhani,sans-serif'; ctx.fillStyle = '#a3e635';
-      ctx.fillText('All Curses have been exorcised. Tokyo is safe.', W/2, H/2+10);
-    } else {
-      ctx.font = 'bold 24px Cinzel Decorative,serif'; ctx.fillStyle = '#c0392b';
-      ctx.fillText('💀 BARRIER COLLAPSED 💀', W/2, H/2-20);
-      ctx.font = '14px Rajdhani,sans-serif'; ctx.fillStyle = '#f87171';
-      ctx.fillText('The Curses have broken through the barrier.', W/2, H/2+10);
-    }
-    ctx.font = '12px Rajdhani,sans-serif'; ctx.fillStyle = '#6050a0';
-    ctx.fillText('Click ↺ Restart to try again', W/2, H/2+34);
-  }
+  state.plants.forEach(drawPlant);
+  state.bullets.forEach(drawBullet);
+  state.zombies.forEach(drawZombie);
+  state.sunDrops.forEach(drawSun);
 
   if (state.shakeTimer > 0) ctx.restore();
+
+  drawWaveBanner();
+
+  if (state.paused) {
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#f5c842';
+    ctx.font = '700 28px Rajdhani';
+    ctx.textAlign = 'center';
+    ctx.fillText('PAUSED', W/2, H/2);
+  }
+
+  if (state.over) {
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = state.won ? '#f5c842' : '#ff7070';
+    ctx.font = '700 28px Rajdhani';
+    ctx.textAlign = 'center';
+    ctx.fillText(state.won ? 'VICTORY' : 'DEFEAT', W/2, H/2 - 10);
+    ctx.font = '700 14px Rajdhani';
+    ctx.fillStyle = '#e8e0f0';
+    ctx.fillText(state.won ? 'All curse waves survived.' : 'The barrier has fallen.', W/2, H/2 + 16);
+  }
+}
+
+function gameLoop() {
+  update();
+  render();
+  requestAnimationFrame(gameLoop);
 }
 
 function togglePause() {
-  if (state.over) return;
   state.paused = !state.paused;
-  document.querySelector('#btn-row .ctrl').textContent = state.paused ? '▶ Resume' : '⏸ Pause';
-  setMsg(state.paused ? 'Paused — Sorcerers on standby.' : '');
+  const btn = document.querySelector('#btn-row .ctrl');
+  if (btn) btn.textContent = state.paused ? '▶ Resume' : '⏸ Pause';
 }
 
-function startGame() {
-  initState(); updateHUD();
-  document.getElementById('wave-val').textContent = 1;
-  document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
-  setMsg('Select a sorcerer and click a cell to deploy!');
-  document.querySelector('#btn-row .ctrl').textContent = '⏸ Pause';
+function backToMenu() {
+  document.getElementById('game-screen').classList.add('hidden');
+  document.getElementById('voc-menu').classList.remove('hidden');
+  showScreen('screen-main');
 }
 
-function loop() { update(); draw(); requestAnimationFrame(loop); }
-initState();
-loop();
+initializeGame();
+gameLoop();
+
+/* ============================================================
+   MENU BACKGROUND
+   ============================================================ */
+(function() {
+  const canvas = document.getElementById('voc-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, frame = 0;
+
+  const RUNES = ['咒','術','廻','戦','呪','霊','∞','⛩','卍','✦','⟁','⎊'];
+  const particles = [];
+  const veins = [];
+
+  function resize() {
+    const box = canvas.parentElement.getBoundingClientRect();
+    W = canvas.width = box.width;
+    H = canvas.height = box.height;
+  }
+
+  function randFloat(a, b) { return a + Math.random() * (b - a); }
+
+  function spawnParticle() {
+    particles.push({
+      x: randFloat(0, W), y: randFloat(0, H),
+      ch: RUNES[Math.floor(Math.random() * RUNES.length)],
+      size: randFloat(8, 18),
+      alpha: randFloat(0.03, 0.12),
+      vx: randFloat(-0.15, 0.15), vy: randFloat(-0.2, 0.2),
+      life: randFloat(300, 700), maxLife: 0,
+      hue: Math.random() < 0.5 ? 270 : (Math.random() < 0.5 ? 0 : 50),
+    });
+    particles[particles.length-1].maxLife = particles[particles.length-1].life;
+  }
+
+  function spawnVein() {
+    const y = randFloat(60, H - 60);
+    const pts = [];
+    let cx2 = Math.random() < 0.5 ? 0 : W;
+    const dir = cx2 === 0 ? 1 : -1;
+    for (let i = 0; i < 10; i++) {
+      pts.push({ x: cx2, y: y + randFloat(-55, 55) });
+      cx2 += dir * randFloat(25, 80);
+    }
+    veins.push({
+      pts, alpha: randFloat(0.03, 0.08), life: randFloat(120, 240), maxLife: 0,
+      color: Math.random() < 0.6 ? '124,58,237' : '192,57,43',
+    });
+    veins[veins.length-1].maxLife = veins[veins.length-1].life;
+  }
+
+  for (let i = 0; i < 50; i++) spawnParticle();
+  for (let i = 0; i < 4; i++) spawnVein();
+
+  function loop() {
+    frame++;
+    ctx.clearRect(0, 0, W, H);
+
+    const bg = ctx.createRadialGradient(W*0.5, H*0.35, 0, W*0.5, H*0.5, W*0.7);
+    bg.addColorStop(0, 'rgba(35,10,70,0.6)');
+    bg.addColorStop(0.5, 'rgba(12,4,28,0.7)');
+    bg.addColorStop(1, 'rgba(4,2,12,0.8)');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    const hexSize = 30, cos30 = Math.sqrt(3)/2;
+    const hw = hexSize * 2 * cos30;
+    const hh = hexSize * 2;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(100,50,200,0.05)';
+    ctx.lineWidth = 0.4;
+    for (let row = 0; row < Math.ceil(H/(hh*0.75))+2; row++) {
+      for (let col = 0; col < Math.ceil(W/hw)+2; col++) {
+        const cx = col * hw + (row % 2 === 0 ? hw/2 : 0);
+        const cy = row * hh * 0.75;
+        ctx.beginPath();
+        for (let k = 0; k < 6; k++) {
+          const angle = (Math.PI / 3) * k - Math.PI / 6;
+          const px = cx + hexSize * Math.cos(angle);
+          const py = cy + hexSize * Math.sin(angle);
+          k === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+
+    if (frame % 120 === 0 && veins.length < 8) spawnVein();
+    for (let i = veins.length - 1; i >= 0; i--) {
+      const v = veins[i];
+      v.life--;
+      const progress = v.life / v.maxLife;
+      const a = v.alpha * Math.min(1, progress*6) * Math.min(1, (1-progress)*6);
+      ctx.save();
+      ctx.globalAlpha = a;
+      ctx.strokeStyle = `rgba(${v.color},1)`;
+      ctx.lineWidth = 0.8;
+      ctx.shadowColor = `rgba(${v.color},0.5)`;
+      ctx.shadowBlur = 4;
+      ctx.beginPath();
+      ctx.moveTo(v.pts[0].x, v.pts[0].y);
+      for (let j = 1; j < v.pts.length; j++) ctx.lineTo(v.pts[j].x, v.pts[j].y);
+      ctx.stroke();
+      ctx.restore();
+      if (v.life <= 0) veins.splice(i, 1);
+    }
+
+    if (frame % 8 === 0 && particles.length < 80) spawnParticle();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy; p.life--;
+      const progress = p.life / p.maxLife;
+      const a = p.alpha * Math.min(1, progress*5) * Math.min(1, (1-progress)*5);
+      ctx.save();
+      ctx.globalAlpha = a;
+      ctx.font = `${p.size}px serif`;
+      if (p.hue === 270) ctx.fillStyle = 'rgba(180,130,255,1)';
+      else if (p.hue === 0) ctx.fillStyle = 'rgba(255,120,100,1)';
+      else ctx.fillStyle = 'rgba(255,210,80,1)';
+      ctx.fillText(p.ch, p.x, p.y);
+      ctx.restore();
+      if (p.life <= 0) particles.splice(i, 1);
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  loop();
+})();
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function openGame() {
+  document.getElementById('voc-menu').classList.add('hidden');
+  document.getElementById('game-screen').classList.remove('hidden');
+  initializeGame();
+}
 </script>
 </body>
 </html>
