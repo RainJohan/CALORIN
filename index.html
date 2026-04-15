@@ -9,7 +9,7 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0a0a12;
+    --bg: #06040f;
     --panel: #0f0f1e;
     --border: #2a1a4a;
     --gold: #d4a017;
@@ -21,39 +21,44 @@
     --purple: #7c3aed;
     --text: #e8e0f0;
     --subtext: #9080b0;
-    --curse-dark: #1a0a2e;
-    --curse-mid: #2d1060;
   }
 
   body {
     background: var(--bg);
-    background-image:
-      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(124,58,237,0.13) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 30% at 80% 100%, rgba(192,57,43,0.09) 0%, transparent 60%),
-      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 39px, rgba(255,255,255,0.015) 40px),
-      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 39px, rgba(255,255,255,0.015) 40px);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
     min-height: 100vh;
-    padding: 18px 12px 24px;
-    font-family: 'Rajdhani', sans-serif;
+    padding: 12px 8px 20px;
+    font-family: 'Rajdhani', Segoe UI, sans-serif;
     color: var(--text);
     overflow-x: hidden;
+    position: relative;
   }
+
+  /* ===== BACKGROUND LAYER ===== */
+  #bg-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Everything above bg */
+  body > *:not(#bg-canvas) { position: relative; z-index: 1; }
 
   /* === TITLE === */
   .title-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 14px;
-    position: relative;
+    margin-bottom: 10px;
   }
   h1 {
     font-family: 'Cinzel Decorative', serif;
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 900;
     letter-spacing: 3px;
     background: linear-gradient(135deg, #d4a017 0%, #f5c842 40%, #c0392b 80%, #7c3aed 100%);
@@ -65,16 +70,16 @@
     text-align: center;
   }
   .subtitle {
-    font-size: 11px;
+    font-size: 10px;
     letter-spacing: 5px;
     color: var(--subtext);
     text-transform: uppercase;
-    margin-top: 3px;
+    margin-top: 2px;
   }
   .title-line {
-    width: 300px; height: 1px;
+    width: 340px; height: 1px;
     background: linear-gradient(90deg, transparent, var(--gold), var(--red), transparent);
-    margin: 6px 0 0;
+    margin: 5px 0 0;
     opacity: 0.6;
   }
 
@@ -82,57 +87,57 @@
   #hud {
     display: flex;
     align-items: center;
-    gap: 14px;
-    margin-bottom: 10px;
+    gap: 10px;
+    margin-bottom: 8px;
     flex-wrap: wrap;
     width: 100%;
-    max-width: 640px;
-    padding: 8px 14px;
-    background: rgba(15,10,30,0.8);
+    max-width: 760px;
+    padding: 6px 14px;
+    background: rgba(10,5,22,0.85);
     border: 1px solid var(--border);
     border-radius: 10px;
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(8px);
   }
   .hud-pill {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 3px 12px;
+    gap: 5px;
+    padding: 3px 11px;
     border-radius: 20px;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.5px;
   }
-  #sun-display { background: rgba(212,160,23,0.15); border: 1px solid rgba(212,160,23,0.4); color: var(--gold2); }
+  #sun-display  { background: rgba(212,160,23,0.15); border: 1px solid rgba(212,160,23,0.4); color: var(--gold2); }
   #wave-display { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.4); color: #c084fc; }
-  #lives-display { margin-left: auto; background: rgba(192,57,43,0.15); border: 1px solid rgba(192,57,43,0.4); color: #f87171; }
+  #lives-display{ margin-left: auto; background: rgba(192,57,43,0.15); border: 1px solid rgba(192,57,43,0.4); color: #f87171; }
 
   /* === SHOP === */
   #shop {
     display: flex;
     gap: 6px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     flex-wrap: wrap;
     justify-content: center;
-    max-width: 660px;
+    max-width: 760px;
   }
-
   .plant-card {
     border: 1.5px solid rgba(255,255,255,0.08);
     border-radius: 10px;
-    padding: 7px 10px 6px;
+    padding: 6px 10px 5px;
     font-size: 11px;
     cursor: pointer;
-    background: rgba(15,10,30,0.85);
+    background: rgba(10,5,22,0.88);
     color: var(--subtext);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 2px;
-    min-width: 74px;
+    min-width: 80px;
     transition: all 0.18s ease;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(6px);
   }
   .plant-card::before {
     content: '';
@@ -153,28 +158,24 @@
     color: var(--gold2);
     box-shadow: 0 0 16px rgba(212,160,23,0.3), inset 0 0 10px rgba(212,160,23,0.06);
   }
-  .plant-card .cost {
-    font-size: 11px;
-    color: var(--gold);
-    font-weight: 700;
-  }
+  .plant-card .cost { font-size: 11px; color: var(--gold); font-weight: 700; }
   .plant-card .icon { font-size: 22px; line-height: 1.1; }
   .plant-card .name { font-size: 11px; font-weight: 700; letter-spacing: 0.3px; color: inherit; }
 
-  /* Shovel special */
   .plant-card[data-type="shovel"] .cost { color: var(--teal); }
-  .plant-card[data-type="shovel"]:hover { border-color: var(--teal); box-shadow: 0 6px 20px rgba(0,201,167,0.2); }
+  .plant-card[data-type="shovel"]:hover  { border-color: var(--teal); box-shadow: 0 6px 20px rgba(0,201,167,0.2); }
   .plant-card[data-type="shovel"].selected { border-color: var(--teal); background: rgba(0,201,167,0.1); color: var(--teal); box-shadow: 0 0 16px rgba(0,201,167,0.25); }
 
   /* === CANVAS === */
   #canvas-wrap {
     border-radius: 12px;
     overflow: hidden;
-    border: 2px solid rgba(124,58,237,0.35);
+    border: 2px solid rgba(124,58,237,0.5);
     box-shadow:
-      0 0 40px rgba(124,58,237,0.18),
-      0 0 0 1px rgba(212,160,23,0.07),
-      inset 0 0 30px rgba(0,0,0,0.4);
+      0 0 80px rgba(124,58,237,0.3),
+      0 0 0 1px rgba(212,160,23,0.1),
+      0 0 160px rgba(124,58,237,0.1),
+      inset 0 0 40px rgba(0,0,0,0.4);
     position: relative;
   }
   canvas { display: block; }
@@ -184,20 +185,20 @@
     text-align: center;
     font-size: 13px;
     color: var(--gold);
-    margin-top: 8px;
-    min-height: 20px;
+    margin-top: 7px;
+    min-height: 18px;
     font-weight: 600;
     letter-spacing: 0.5px;
     text-shadow: 0 0 10px rgba(212,160,23,0.4);
   }
 
   /* === BUTTONS === */
-  #btn-row { display: flex; gap: 8px; margin-top: 10px; }
+  #btn-row { display: flex; gap: 8px; margin-top: 8px; }
   button.ctrl {
-    padding: 8px 20px;
+    padding: 7px 18px;
     border-radius: 8px;
     border: 1px solid rgba(212,160,23,0.3);
-    background: rgba(15,10,30,0.9);
+    background: rgba(10,5,22,0.9);
     color: var(--gold2);
     cursor: pointer;
     font-size: 13px;
@@ -205,6 +206,7 @@
     font-weight: 700;
     letter-spacing: 1px;
     transition: all 0.18s;
+    backdrop-filter: blur(6px);
   }
   button.ctrl:hover {
     background: rgba(212,160,23,0.12);
@@ -212,38 +214,39 @@
     box-shadow: 0 0 14px rgba(212,160,23,0.25);
   }
 
-  /* === LORE CARDS === */
-  #lore { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; justify-content: center; max-width: 660px; }
+  /* === LORE === */
+  #bottom { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; justify-content: center; max-width: 760px; }
   .lore-card {
-    background: rgba(10,8,20,0.7);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(6,4,15,0.8);
+    border: 1px solid rgba(255,255,255,0.07);
     border-radius: 8px;
-    padding: 6px 10px;
+    padding: 5px 9px;
     font-size: 10.5px;
     color: var(--subtext);
-    min-width: 88px;
+    min-width: 82px;
     text-align: center;
     line-height: 1.5;
+    backdrop-filter: blur(6px);
   }
-  .lore-card .lname { color: var(--text); font-weight: 700; font-size: 11.5px; }
+  .lore-card .lname { color: var(--text); font-weight: 700; font-size: 11px; }
   .lore-card .lrole { color: #7c3aed; font-size: 10px; }
 
   /* === INSTRUCTIONS === */
   #instructions {
-    margin-top: 10px;
-    font-size: 11.5px;
+    margin-top: 8px;
+    font-size: 11px;
     color: var(--subtext);
-    max-width: 640px;
+    max-width: 760px;
     text-align: center;
-    line-height: 1.75;
+    line-height: 1.7;
   }
   #instructions span { color: var(--gold); font-weight: 700; }
-
-  /* Decorative sigil corners */
-  .sigil { position: absolute; width: 50px; height: 50px; opacity: 0.07; pointer-events: none; }
 </style>
 </head>
 <body>
+
+<!-- Background animated canvas -->
+<canvas id="bg-canvas"></canvas>
 
 <div class="title-wrap">
   <h1>⛩ VEIL OF CURSES ⛩</h1>
@@ -259,34 +262,22 @@
 
 <div id="shop">
   <div class="plant-card" data-type="sunflower" onclick="selectPlant('sunflower')">
-    <span class="icon">🌸</span>
-    <span class="name">Shoko</span>
-    <span class="cost">✦ 50</span>
+    <span class="icon">🌸</span><span class="name">Shoko</span><span class="cost">✦ 50</span>
   </div>
   <div class="plant-card" data-type="peashooter" onclick="selectPlant('peashooter')">
-    <span class="icon">👊</span>
-    <span class="name">Yuji</span>
-    <span class="cost">✦ 100</span>
+    <span class="icon">👊</span><span class="name">Yuji</span><span class="cost">✦ 100</span>
   </div>
   <div class="plant-card" data-type="wallnut" onclick="selectPlant('wallnut')">
-    <span class="icon">🛡</span>
-    <span class="name">Todo</span>
-    <span class="cost">✦ 50</span>
+    <span class="icon">🛡</span><span class="name">Todo</span><span class="cost">✦ 50</span>
   </div>
   <div class="plant-card" data-type="snowpea" onclick="selectPlant('snowpea')">
-    <span class="icon">♾</span>
-    <span class="name">Gojo</span>
-    <span class="cost">✦ 175</span>
+    <span class="icon">♾</span><span class="name">Gojo</span><span class="cost">✦ 175</span>
   </div>
   <div class="plant-card" data-type="cherry" onclick="selectPlant('cherry')">
-    <span class="icon">💀</span>
-    <span class="name">Sukuna</span>
-    <span class="cost">✦ 150</span>
+    <span class="icon">💀</span><span class="name">Sukuna</span><span class="cost">✦ 150</span>
   </div>
   <div class="plant-card" data-type="shovel" onclick="selectPlant('shovel')">
-    <span class="icon">🗡</span>
-    <span class="name">Remove</span>
-    <span class="cost" style="color:var(--teal)">free</span>
+    <span class="icon">🗡</span><span class="name">Remove</span><span class="cost" style="color:var(--teal)">free</span>
   </div>
 </div>
 
@@ -297,51 +288,362 @@
   <button class="ctrl" onclick="startGame()">↺ Restart</button>
 </div>
 
-<div id="lore">
-  <div class="lore-card"><span class="lname">🌸 Shoko</span><br><span class="lrole">Reverse CE · Healer</span><br>Generates cursed energy for the team</div>
-  <div class="lore-card"><span class="lname">👊 Yuji</span><br><span class="lrole">Divergent Fist</span><br>Basic attacker — raw power strikes</div>
-  <div class="lore-card"><span class="lname">🛡 Todo</span><br><span class="lrole">Boogie Woogie</span><br>Tanky barrier — absorbs hits</div>
-  <div class="lore-card"><span class="lname">♾ Gojo</span><br><span class="lrole">Infinity · Slow</span><br>Slows curses with Limitless</div>
-  <div class="lore-card"><span class="lname">💀 Sukuna</span><br><span class="lrole">Malevolent Shrine</span><br>Annihilates all curses in range</div>
+<div id="bottom">
+  <div class="lore-card"><span class="lname">🌸 Shoko</span><br><span class="lrole">Reverse CE · Healer</span><br>Generates cursed energy</div>
+  <div class="lore-card"><span class="lname">👊 Yuji</span><br><span class="lrole">Divergent Fist</span><br>Basic power attacker</div>
+  <div class="lore-card"><span class="lname">🛡 Todo</span><br><span class="lrole">Boogie Woogie</span><br>Tanky barrier block</div>
+  <div class="lore-card"><span class="lname">♾ Gojo</span><br><span class="lrole">Infinity · Slow</span><br>Slows curses</div>
+  <div class="lore-card"><span class="lname">💀 Sukuna</span><br><span class="lrole">Malevolent Shrine</span><br>Massive AoE in 3s</div>
 </div>
 
 <div id="instructions">
-  <span>How to play:</span> Deploy sorcerers on the barrier grid. Click ✦ CE drops to collect energy.
-  Shoko generates extra CE. Gojo's Infinity slows curses. Sukuna detonates after 3s for massive AoE.
-  Use <span>Remove</span> to recall a sorcerer. Survive all 5 Curse Waves to win!
+  <span>How to play:</span> Deploy sorcerers on the grid · Click ✦ CE orbs to collect · Survive all 5 Curse Waves
 </div>
 
 <script>
-const COLS = 9, ROWS = 5;
-const CELL = 70, TOP_PAD = 10;
+/* ============================================================
+   BACKGROUND CANVAS — atmospheric cursed energy environment
+   ============================================================ */
+(function() {
+  const bg = document.getElementById('bg-canvas');
+  const bx = bg.getContext('2d');
+  let W, H, frame = 0;
+
+  // Rune characters (Japanese + occult symbols)
+  const RUNES = ['咒', '術', '廻', '戦', '呪', '霊', '式', '神', '天', '刻', '縛', '伏', '黒', '閃', '蒼', '赫', '乾', '坤', '壊', '葬', '∞', '⛩', '卍', '彡', '⚡', '◈', '✦', '⟁', '⬡', '⎊'];
+
+  // Floating rune particles
+  const runes = [];
+  // Drifting energy orbs
+  const orbs = [];
+  // Curse veins (jagged lightning-style lines)
+  const veins = [];
+  // Eye of curses
+  const eyes = [];
+
+  function resize() {
+    W = bg.width  = window.innerWidth;
+    H = bg.height = window.innerHeight;
+  }
+
+  function randFloat(a, b) { return a + Math.random() * (b - a); }
+  function randInt(a, b)   { return Math.floor(randFloat(a, b)); }
+
+  function spawnRune() {
+    runes.push({
+      x: randFloat(0, W),
+      y: randFloat(-40, H + 40),
+      ch: RUNES[randInt(0, RUNES.length)],
+      size: randFloat(9, 22),
+      alpha: randFloat(0.04, 0.14),
+      vx: randFloat(-0.18, 0.18),
+      vy: randFloat(-0.25, 0.25),
+      life: randFloat(280, 700),
+      maxLife: 0,
+      hue: Math.random() < 0.5 ? 270 : (Math.random() < 0.5 ? 0 : 50),
+    });
+    runes[runes.length-1].maxLife = runes[runes.length-1].life;
+  }
+
+  function spawnOrb() {
+    const side = Math.random() < 0.5;
+    orbs.push({
+      x: side ? randFloat(-20, W * 0.3) : randFloat(W * 0.7, W + 20),
+      y: randFloat(0, H),
+      r: randFloat(3, 11),
+      alpha: randFloat(0.04, 0.18),
+      vx: randFloat(-0.35, 0.35),
+      vy: randFloat(-0.2, 0.2),
+      life: randFloat(400, 900),
+      maxLife: 0,
+      color: ['124,58,237','192,57,43','26,140,255','212,160,23','0,201,167'][randInt(0,5)],
+      pulse: randFloat(0, Math.PI * 2),
+    });
+    orbs[orbs.length-1].maxLife = orbs[orbs.length-1].life;
+  }
+
+  function spawnVein() {
+    const y = randFloat(50, H - 50);
+    const pts = [];
+    let cx = Math.random() < 0.5 ? 0 : W;
+    const dir = cx === 0 ? 1 : -1;
+    const seg = randInt(6, 14);
+    for (let i = 0; i < seg; i++) {
+      pts.push({ x: cx, y: y + randFloat(-60, 60) });
+      cx += dir * randFloat(30, 90);
+    }
+    veins.push({
+      pts,
+      alpha: randFloat(0.03, 0.09),
+      life: randFloat(120, 260),
+      maxLife: 0,
+      color: Math.random() < 0.6 ? '124,58,237' : (Math.random() < 0.5 ? '192,57,43' : '212,160,23'),
+    });
+    veins[veins.length-1].maxLife = veins[veins.length-1].life;
+  }
+
+  function spawnEye() {
+    eyes.push({
+      x: randFloat(W * 0.1, W * 0.9),
+      y: randFloat(H * 0.1, H * 0.9),
+      r: randFloat(14, 36),
+      alpha: 0,
+      targetAlpha: randFloat(0.06, 0.16),
+      life: randFloat(220, 500),
+      maxLife: 0,
+      pupilX: 0,
+      pupilY: 0,
+      color: Math.random() < 0.5 ? '192,57,43' : '124,58,237',
+    });
+    eyes[eyes.length-1].maxLife = eyes[eyes.length-1].life;
+  }
+
+  // Seed initial particles
+  function seed() {
+    for (let i = 0; i < 60; i++) spawnRune();
+    for (let i = 0; i < 20; i++) spawnOrb();
+    for (let i = 0; i < 5;  i++) spawnVein();
+    for (let i = 0; i < 4;  i++) spawnEye();
+  }
+
+  function drawEye(e) {
+    const { x, y, r, alpha, color, pupilX, pupilY } = e;
+    bx.save();
+    bx.globalAlpha = alpha;
+
+    // Outer glow
+    const gr = bx.createRadialGradient(x, y, 0, x, y, r * 2.5);
+    gr.addColorStop(0, `rgba(${color},0.18)`);
+    gr.addColorStop(1, 'transparent');
+    bx.fillStyle = gr;
+    bx.beginPath(); bx.arc(x, y, r * 2.5, 0, Math.PI * 2); bx.fill();
+
+    // Eye white (elongated)
+    bx.save();
+    bx.translate(x, y);
+    bx.scale(1.8, 1);
+    bx.beginPath();
+    bx.ellipse(0, 0, r, r * 0.55, 0, 0, Math.PI * 2);
+    bx.fillStyle = `rgba(${color},0.08)`;
+    bx.fill();
+    bx.strokeStyle = `rgba(${color},0.35)`;
+    bx.lineWidth = 0.8;
+    bx.stroke();
+    bx.restore();
+
+    // Pupil
+    bx.beginPath();
+    bx.ellipse(x + pupilX * r * 0.25, y + pupilY * r * 0.25, r * 0.28, r * 0.45, 0, 0, Math.PI * 2);
+    bx.fillStyle = `rgba(${color},0.55)`;
+    bx.fill();
+
+    // Iris ring
+    bx.beginPath();
+    bx.arc(x + pupilX * r * 0.15, y + pupilY * r * 0.15, r * 0.44, 0, Math.PI * 2);
+    bx.strokeStyle = `rgba(${color},0.28)`;
+    bx.lineWidth = 0.6;
+    bx.stroke();
+
+    bx.restore();
+  }
+
+  function bgLoop() {
+    frame++;
+    bx.clearRect(0, 0, W, H);
+
+    // ---- deep background gradient ----
+    const bgGrad = bx.createRadialGradient(W * 0.5, H * 0.3, 0, W * 0.5, H * 0.5, W * 0.8);
+    bgGrad.addColorStop(0,   'rgba(40,12,80,0.55)');
+    bgGrad.addColorStop(0.4, 'rgba(15,5,30,0.65)');
+    bgGrad.addColorStop(1,   'rgba(4,2,12,0.75)');
+    bx.fillStyle = bgGrad;
+    bx.fillRect(0, 0, W, H);
+
+    // ---- left-side red curse pillar ----
+    const lp = bx.createLinearGradient(0, 0, W * 0.22, 0);
+    lp.addColorStop(0,   'rgba(140,20,20,0.13)');
+    lp.addColorStop(0.6, 'rgba(192,57,43,0.06)');
+    lp.addColorStop(1,   'transparent');
+    bx.fillStyle = lp;
+    bx.fillRect(0, 0, W * 0.22, H);
+
+    // ---- right-side purple pillar ----
+    const rp = bx.createLinearGradient(W * 0.78, 0, W, 0);
+    rp.addColorStop(0,   'transparent');
+    rp.addColorStop(0.4, 'rgba(100,40,200,0.06)');
+    rp.addColorStop(1,   'rgba(80,20,160,0.14)');
+    bx.fillStyle = rp;
+    bx.fillRect(W * 0.78, 0, W * 0.22, H);
+
+    // ---- top atmospheric glow ----
+    const tg = bx.createRadialGradient(W * 0.5, 0, 0, W * 0.5, 0, H * 0.5);
+    tg.addColorStop(0,   'rgba(124,58,237,0.1)');
+    tg.addColorStop(0.5, 'rgba(80,20,140,0.05)');
+    tg.addColorStop(1,   'transparent');
+    bx.fillStyle = tg;
+    bx.fillRect(0, 0, W, H * 0.5);
+
+    // ---- subtle hex grid pattern ----
+    drawHexGrid();
+
+    // ---- curse veins ----
+    if (frame % 90 === 0 && veins.length < 12) spawnVein();
+    for (let i = veins.length - 1; i >= 0; i--) {
+      const v = veins[i];
+      v.life--;
+      const progress = v.life / v.maxLife;
+      const a = v.alpha * Math.min(1, progress * 6) * Math.min(1, (1 - progress) * 6);
+      bx.save();
+      bx.globalAlpha = a;
+      bx.strokeStyle = `rgba(${v.color},1)`;
+      bx.lineWidth = 0.7;
+      bx.shadowColor = `rgba(${v.color},0.6)`;
+      bx.shadowBlur = 4;
+      bx.beginPath();
+      bx.moveTo(v.pts[0].x, v.pts[0].y);
+      for (let j = 1; j < v.pts.length; j++) bx.lineTo(v.pts[j].x, v.pts[j].y);
+      bx.stroke();
+      bx.restore();
+      if (v.life <= 0) veins.splice(i, 1);
+    }
+
+    // ---- floating orbs ----
+    if (frame % 25 === 0 && orbs.length < 30) spawnOrb();
+    for (let i = orbs.length - 1; i >= 0; i--) {
+      const o = orbs[i];
+      o.x += o.vx; o.y += o.vy; o.life--; o.pulse += 0.04;
+      const progress = o.life / o.maxLife;
+      const a = o.alpha * Math.min(1, progress * 8) * Math.min(1, (1 - progress) * 8);
+      const pr = o.r * (1 + Math.sin(o.pulse) * 0.15);
+      bx.save();
+      bx.globalAlpha = a;
+      const og = bx.createRadialGradient(o.x, o.y, 0, o.x, o.y, pr * 3);
+      og.addColorStop(0, `rgba(${o.color},0.55)`);
+      og.addColorStop(0.4, `rgba(${o.color},0.15)`);
+      og.addColorStop(1, 'transparent');
+      bx.fillStyle = og;
+      bx.beginPath(); bx.arc(o.x, o.y, pr * 3, 0, Math.PI * 2); bx.fill();
+      bx.fillStyle = `rgba(${o.color},0.8)`;
+      bx.beginPath(); bx.arc(o.x, o.y, pr * 0.5, 0, Math.PI * 2); bx.fill();
+      bx.restore();
+      if (o.life <= 0) orbs.splice(i, 1);
+    }
+
+    // ---- floating rune glyphs ----
+    if (frame % 8 === 0 && runes.length < 80) spawnRune();
+    bx.textAlign = 'center'; bx.textBaseline = 'middle';
+    for (let i = runes.length - 1; i >= 0; i--) {
+      const r = runes[i];
+      r.x += r.vx; r.y += r.vy; r.life--;
+      const progress = r.life / r.maxLife;
+      const a = r.alpha * Math.min(1, progress * 5) * Math.min(1, (1 - progress) * 5);
+      bx.save();
+      bx.globalAlpha = a;
+      bx.font = `${r.size}px serif`;
+      if (r.hue === 270)      bx.fillStyle = `rgba(180,130,255,1)`;
+      else if (r.hue === 0)   bx.fillStyle = `rgba(255,120,100,1)`;
+      else                    bx.fillStyle = `rgba(255,210,80,1)`;
+      bx.fillText(r.ch, r.x, r.y);
+      bx.restore();
+      if (r.life <= 0) runes.splice(i, 1);
+    }
+
+    // ---- curse eyes ----
+    if (frame % 150 === 0 && eyes.length < 8) spawnEye();
+    for (let i = eyes.length - 1; i >= 0; i--) {
+      const e = eyes[i];
+      e.life--;
+      const progress = e.life / e.maxLife;
+      e.alpha += (e.targetAlpha - e.alpha) * 0.04;
+      if (progress < 0.12) e.alpha *= 0.92;
+      e.pupilX = Math.sin(frame * 0.015 + i) * 0.6;
+      e.pupilY = Math.cos(frame * 0.012 + i) * 0.4;
+      drawEye(e);
+      if (e.life <= 0) eyes.splice(i, 1);
+    }
+
+    // ---- bottom fog ----
+    const fog = bx.createLinearGradient(0, H * 0.75, 0, H);
+    fog.addColorStop(0, 'transparent');
+    fog.addColorStop(1, 'rgba(6,4,15,0.5)');
+    bx.fillStyle = fog;
+    bx.fillRect(0, H * 0.75, W, H * 0.25);
+
+    // ---- scanline texture (very subtle) ----
+    bx.fillStyle = 'rgba(0,0,0,0.025)';
+    for (let y = 0; y < H; y += 3) {
+      bx.fillRect(0, y, W, 1);
+    }
+
+    requestAnimationFrame(bgLoop);
+  }
+
+  function drawHexGrid() {
+    const size = 38, t = frame * 0.002;
+    const cos30 = Math.sqrt(3) / 2;
+    const w = size * 2 * cos30;
+    const h = size * 2;
+    const rows = Math.ceil(H / (h * 0.75)) + 2;
+    const cols = Math.ceil(W / w) + 2;
+
+    bx.save();
+    bx.strokeStyle = 'rgba(100,50,200,0.055)';
+    bx.lineWidth = 0.4;
+    for (let row = -1; row < rows; row++) {
+      for (let col = -1; col < cols; col++) {
+        const cx = col * w + (row % 2 === 0 ? w / 2 : 0);
+        const cy = row * h * 0.75;
+        // Pulse some hexes
+        const dist = Math.sqrt((cx - W/2)**2 + (cy - H/2)**2);
+        const wave = Math.sin(dist * 0.012 - t * 3) * 0.5 + 0.5;
+        if (wave < 0.3) continue;
+        bx.globalAlpha = wave * 0.06;
+        bx.beginPath();
+        for (let k = 0; k < 6; k++) {
+          const angle = (Math.PI / 3) * k - Math.PI / 6;
+          const px = cx + size * Math.cos(angle);
+          const py = cy + size * Math.sin(angle);
+          k === 0 ? bx.moveTo(px, py) : bx.lineTo(px, py);
+        }
+        bx.closePath();
+        bx.stroke();
+      }
+    }
+    bx.restore();
+  }
+
+  resize();
+  seed();
+  window.addEventListener('resize', resize);
+  bgLoop();
+})();
+
+/* ============================================================
+   GAME LOGIC
+   ============================================================ */
+const COLS = 10, ROWS = 5, CELL = 76, TOP_PAD = 12;
 const W = COLS * CELL, H = ROWS * CELL + TOP_PAD;
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 canvas.width = W; canvas.height = H;
 
-// ---- Curse type emojis & labels ----
 const CURSE_TYPES = [
-  { type: 'weak',   emoji: '👁',  label: 'Weak Curse',    hpMult: 1,   spMult: 1,    color: '#5a3a7e', glow: '#7c3aed' },
-  { type: 'finger', emoji: '🦷',  label: 'Finger Bearer', hpMult: 2.5, spMult: 0.75, color: '#8b1a1a', glow: '#c0392b' },
-  { type: 'special',emoji: '👺',  label: 'Special Grade', hpMult: 5,   spMult: 0.6,  color: '#1a3a5a', glow: '#1a8cff' },
+  { type: 'weak',    emoji: '👁',  label: 'Weak Curse',    hpMult: 1,   spMult: 1,    color: '#5a3a7e', glow: '#7c3aed' },
+  { type: 'finger',  emoji: '🦷',  label: 'Finger Bearer', hpMult: 2.5, spMult: 0.75, color: '#8b1a1a', glow: '#c0392b' },
+  { type: 'special', emoji: '👺',  label: 'Special Grade', hpMult: 5,   spMult: 0.6,  color: '#1a3a5a', glow: '#1a8cff' },
 ];
 
 const PLANTS = {
   sunflower:  { color: '#d4769a', hp: 80,  cost: 50,  sunRate: 0.18, shoot: false, label: 'Shoko' },
   peashooter: { color: '#c0392b', hp: 100, cost: 100, sunRate: 0,    shoot: true,  dmg: 20, speed: 3.5, slow: false, label: 'Yuji' },
   wallnut:    { color: '#4a3060', hp: 400, cost: 50,  sunRate: 0,    shoot: false, label: 'Todo' },
-  snowpea:    { color: '#1a2a5e', hp: 100, cost: 175, sunRate: 0,    shoot: true,  dmg: 18, speed: 3.5, slow: true, label: 'Gojo' },
+  snowpea:    { color: '#1a2a5e', hp: 100, cost: 175, sunRate: 0,    shoot: true,  dmg: 18, speed: 3.5, slow: true,  label: 'Gojo' },
   cherry:     { color: '#2a0010', hp: 1,   cost: 150, sunRate: 0,    shoot: false, bomb: true, label: 'Sukuna' },
   shovel:     { color: null,      hp: 0,   cost: 0 }
 };
 
-// Character icons on canvas
 const CHAR_ICONS = {
-  sunflower:  '🌸',
-  peashooter: '👊',
-  wallnut:    '🛡',
-  snowpea:    '♾',
-  cherry:     '💀',
+  sunflower: '🌸', peashooter: '👊', wallnut: '🛡', snowpea: '♾', cherry: '💀'
 };
 
 let state = {};
@@ -353,7 +655,7 @@ function initState() {
     selected: null, frame: 0, sunTimer: 0,
     waveTimer: 0, waveSpawned: 0, waveTotal: 5, waveDelay: 420,
     waveStarted: false, betweenWaves: false, betweenTimer: 0,
-    maxWaves: 5
+    maxWaves: 5, shakeTimer: 0
   };
 }
 
@@ -367,10 +669,8 @@ function selectPlant(type) {
 canvas.addEventListener('click', e => {
   if (state.over || state.paused) return;
   const rect = canvas.getBoundingClientRect();
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-  const mx = (e.clientX - rect.left) * scaleX;
-  const my = (e.clientY - rect.top) * scaleY;
+  const sx = canvas.width / rect.width, sy = canvas.height / rect.height;
+  const mx = (e.clientX - rect.left) * sx, my = (e.clientY - rect.top) * sy;
 
   let collected = false;
   state.sunDrops = state.sunDrops.filter(s => {
@@ -381,21 +681,19 @@ canvas.addEventListener('click', e => {
   if (collected) return;
 
   if (!state.selected) return;
-  const col = Math.floor(mx / CELL);
-  const row = Math.floor((my - TOP_PAD) / CELL);
-  if (col < 0 || col >= COLS || row < 0 || row >= ROWS) return;
+  const gc = Math.floor(mx / CELL), gr = Math.floor((my - TOP_PAD) / CELL);
+  if (gc < 0 || gc >= COLS || gr < 0 || gr >= ROWS) return;
 
   if (state.selected === 'shovel') {
-    state.plants = state.plants.filter(p => !(p.col === col && p.row === row));
+    state.plants = state.plants.filter(p => !(p.col === gc && p.row === gr));
     return;
   }
   const def = PLANTS[state.selected];
   if (state.sun < def.cost) { setMsg('Not enough Cursed Energy! ✦'); return; }
-  if (state.plants.find(p => p.col === col && p.row === row)) { setMsg('Cell occupied!'); return; }
-
+  if (state.plants.find(p => p.col === gc && p.row === gr)) { setMsg('Cell occupied!'); return; }
   state.sun -= def.cost;
   state.plants.push({
-    col, row, type: state.selected,
+    col: gc, row: gr, type: state.selected,
     hp: def.hp, maxHp: def.hp,
     shootTimer: 0, sunTimer: 0,
     explodeTimer: def.bomb ? 90 : -1
@@ -407,17 +705,10 @@ canvas.addEventListener('click', e => {
 
 function spawnZombie() {
   const row = Math.floor(Math.random() * ROWS);
-  const wave = state.wave;
-  const r = Math.random();
-  let cdef;
-  if (wave >= 3 && r < 0.12) cdef = CURSE_TYPES[2];
-  else if (wave >= 2 && r < 0.2) cdef = CURSE_TYPES[1];
-  else cdef = CURSE_TYPES[0];
-
-  let baseHp = 80 + wave * 40;
-  let baseSpeed = 0.28 + Math.random() * 0.12;
-  let hp = baseHp * cdef.hpMult;
-  let speed = baseSpeed * cdef.spMult;
+  const wave = state.wave, r = Math.random();
+  let cdef = wave >= 3 && r < 0.12 ? CURSE_TYPES[2] : wave >= 2 && r < 0.2 ? CURSE_TYPES[1] : CURSE_TYPES[0];
+  let hp = (80 + wave * 40) * cdef.hpMult;
+  let speed = (0.28 + Math.random() * 0.12) * cdef.spMult;
   state.zombies.push({ x: W + 20, row, hp, maxHp: hp, speed, cdef, slowTimer: 0 });
 }
 
@@ -425,14 +716,12 @@ function update() {
   if (state.over || state.paused) return;
   state.frame++;
 
-  // Natural CE drops
   state.sunTimer++;
   if (state.sunTimer > 280) {
     state.sunTimer = 0;
-    state.sunDrops.push({ x: Math.random()*(W-60)+30, y: -10, vy: 1.2, val: 25, timer: 130 });
+    state.sunDrops.push({ x: Math.random()*(W-80)+40, y: -10, vy: 1.2, val: 25, timer: 130 });
   }
 
-  // Shoko CE generation
   state.plants.forEach(p => {
     if (PLANTS[p.type].sunRate > 0) {
       p.sunTimer++;
@@ -446,7 +735,6 @@ function update() {
   state.sunDrops.forEach(s => { s.y += s.vy; s.timer--; });
   state.sunDrops = state.sunDrops.filter(s => s.timer > 0);
 
-  // Wave logic
   if (!state.waveStarted && !state.betweenWaves) { state.waveStarted = true; state.waveSpawned = 0; state.waveTimer = 0; }
   if (state.waveStarted && !state.betweenWaves) {
     state.waveTimer++;
@@ -464,17 +752,15 @@ function update() {
     if (state.betweenTimer <= 0) { state.wave++; state.betweenWaves = false; document.getElementById('wave-val').textContent = state.wave; }
   }
 
-  // Sukuna bomb
   state.plants.forEach(p => {
     if (p.type === 'cherry' && p.explodeTimer > 0) {
       p.explodeTimer--;
       if (p.explodeTimer === 0) {
         const cx = p.col*CELL+CELL/2, cy = p.row*CELL+TOP_PAD+CELL/2;
-        // Add screen shake effect flag
         state.shakeTimer = 18;
         state.zombies = state.zombies.filter(z => {
-          const dist = Math.sqrt((z.x - cx)**2 + (z.row*CELL+TOP_PAD+CELL/2 - cy)**2);
-          return dist > CELL * 2.2;
+          const dist = Math.sqrt((z.x-cx)**2 + (z.row*CELL+TOP_PAD+CELL/2-cy)**2);
+          return dist > CELL * 2.4;
         });
         state.plants = state.plants.filter(q => q !== p);
         setMsg('💀 MALEVOLENT SHRINE — Domain Expanded!');
@@ -482,10 +768,8 @@ function update() {
     }
   });
 
-  // Shooting
   state.plants.forEach(p => {
-    const def = PLANTS[p.type];
-    if (!def.shoot) return;
+    const def = PLANTS[p.type]; if (!def.shoot) return;
     p.shootTimer++;
     const hasTarget = state.zombies.some(z => z.row === p.row && z.x > p.col*CELL);
     if (hasTarget && p.shootTimer > 55) {
@@ -501,19 +785,16 @@ function update() {
     for (const z of state.zombies) {
       if (hit) break;
       if (z.row === b.row && b.x >= z.x - CELL*0.4 && b.x <= z.x + CELL*0.15) {
-        z.hp -= b.dmg;
-        if (b.slow) z.slowTimer = 120;
-        hit = true;
+        z.hp -= b.dmg; if (b.slow) z.slowTimer = 120; hit = true;
       }
     }
     return !hit;
   });
 
-  // Move zombies
   state.zombies.forEach(z => {
     const spd = z.slowTimer > 0 ? z.speed * 0.4 : z.speed;
     if (z.slowTimer > 0) z.slowTimer--;
-    const blocking = state.plants.find(p => p.row === z.row && Math.abs(p.col*CELL + CELL/2 - z.x) < CELL*0.6);
+    const blocking = state.plants.find(p => p.row === z.row && Math.abs(p.col*CELL+CELL/2-z.x) < CELL*0.6);
     if (blocking) {
       blocking.hp -= 0.7;
       if (blocking.hp <= 0) state.plants = state.plants.filter(q => q !== blocking);
@@ -523,7 +804,6 @@ function update() {
     if (z.x < -10) { z.dead = true; state.lives--; if (state.lives <= 0) { state.over = true; setMsg('🔥 Barrier Broken! The Curses won...'); } }
   });
   state.zombies = state.zombies.filter(z => z.hp > 0 && !z.dead);
-
   if (state.shakeTimer > 0) state.shakeTimer--;
   updateHUD();
 }
@@ -534,296 +814,279 @@ function updateHUD() {
 }
 function setMsg(t) { document.getElementById('msg').textContent = t; }
 
-// ---- Lane color palette — dark cursed earth ----
-const LANE_COLORS = [
-  '#1a1028', '#1e0e24', '#1c1230', '#1a1028', '#1e0e24'
-];
-const LANE_ACCENT = [
-  'rgba(124,58,237,0.07)', 'rgba(192,57,43,0.05)',
-  'rgba(26,140,255,0.05)', 'rgba(124,58,237,0.07)', 'rgba(192,57,43,0.05)'
-];
+const LANE_COLORS = ['#100a1e','#120c22','#0e0a1c','#130b20','#110924'];
+const LANE_ACCENT = ['rgba(124,58,237,0.08)','rgba(192,57,43,0.06)','rgba(26,140,255,0.06)','rgba(124,58,237,0.08)','rgba(192,57,43,0.06)'];
 
 function drawRoundRect(x, y, w, h, r) {
   ctx.beginPath();
-  ctx.moveTo(x+r, y);
-  ctx.lineTo(x+w-r, y); ctx.arcTo(x+w, y, x+w, y+r, r);
+  ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.arcTo(x+w, y, x+w, y+r, r);
   ctx.lineTo(x+w, y+h-r); ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
   ctx.lineTo(x+r, y+h); ctx.arcTo(x, y+h, x, y+h-r, r);
   ctx.lineTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
   ctx.closePath();
 }
 
-function draw() {
-  ctx.clearRect(0, 0, W, H);
+/* === GAME-CANVAS BACKGROUND: enhanced lane art === */
+function drawGameBackground() {
+  const f = state.frame;
 
-  // Screen shake for Sukuna bomb
-  if (state.shakeTimer > 0) {
-    const s = Math.sin(state.shakeTimer * 1.8) * 4 * (state.shakeTimer / 18);
-    ctx.save();
-    ctx.translate(s, s * 0.5);
-  }
+  // Dark base fill
+  ctx.fillStyle = '#08051a';
+  ctx.fillRect(0, 0, W, H);
 
-  // Lawn grid — dark cursed aesthetic
+  // Lane rows with richer colors
   for (let r = 0; r < ROWS; r++) {
-    // Base row color
     ctx.fillStyle = LANE_COLORS[r];
     ctx.fillRect(0, r*CELL+TOP_PAD, W, CELL);
-    // Accent overlay
     ctx.fillStyle = LANE_ACCENT[r];
     ctx.fillRect(0, r*CELL+TOP_PAD, W, CELL);
+  }
 
-    // Faint lane divider
-    ctx.fillStyle = 'rgba(255,255,255,0.03)';
+  // Animated lane energy pulses (horizontal glow sweeps)
+  for (let r = 0; r < ROWS; r++) {
+    const speed = 0.003 + r * 0.0008;
+    const pos = ((f * speed + r * 0.2) % 1.4) - 0.2;
+    const px = pos * W;
+    const lg = ctx.createLinearGradient(px - 40, 0, px + 40, 0);
+    lg.addColorStop(0, 'transparent');
+    const c = r % 2 === 0 ? '124,58,237' : '192,57,43';
+    lg.addColorStop(0.5, `rgba(${c},0.06)`);
+    lg.addColorStop(1, 'transparent');
+    ctx.fillStyle = lg;
+    ctx.fillRect(0, r*CELL+TOP_PAD, W, CELL);
+  }
+
+  // Subtle hex grid overlay on game canvas
+  ctx.save();
+  const hexSize = 22;
+  const cos30 = Math.sqrt(3) / 2;
+  const hw = hexSize * 2 * cos30;
+  const hh = hexSize * 2;
+  ctx.strokeStyle = 'rgba(100,50,200,0.05)';
+  ctx.lineWidth = 0.4;
+  for (let row = 0; row < ROWS * 4; row++) {
+    for (let col = 0; col < COLS * 5; col++) {
+      const cx2 = col * hw + (row % 2 === 0 ? hw / 2 : 0);
+      const cy2 = row * hh * 0.75 + TOP_PAD;
+      ctx.beginPath();
+      for (let k = 0; k < 6; k++) {
+        const angle = (Math.PI / 3) * k - Math.PI / 6;
+        const px = cx2 + hexSize * Math.cos(angle);
+        const py = cy2 + hexSize * Math.sin(angle);
+        k === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+
+  // Lane dividers with glow
+  for (let r = 0; r < ROWS; r++) {
+    ctx.fillStyle = 'rgba(255,255,255,0.025)';
     ctx.fillRect(0, r*CELL+TOP_PAD, W, 1);
     ctx.fillRect(0, (r+1)*CELL+TOP_PAD-1, W, 1);
+  }
 
-    for (let c = 0; c < COLS; c++) {
-      ctx.strokeStyle = 'rgba(124,58,237,0.08)';
+  // Cell grid
+  for (let r = 0; r < ROWS; r++) {
+    for (let c2 = 0; c2 < COLS; c2++) {
+      ctx.strokeStyle = 'rgba(124,58,237,0.07)';
       ctx.lineWidth = 0.5;
-      ctx.strokeRect(c*CELL, r*CELL+TOP_PAD, CELL, CELL);
+      ctx.strokeRect(c2*CELL, r*CELL+TOP_PAD, CELL, CELL);
     }
   }
 
-  // Barrier strip at right edge
-  const grad = ctx.createLinearGradient(W-18, 0, W, 0);
+  // Floating rune glyphs drawn INTO the game grid (very faint)
+  const RUNES2 = ['咒','術','廻','∞','⛩','卍','✦'];
+  ctx.save();
+  ctx.font = '13px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  for (let i = 0; i < 8; i++) {
+    const x2 = ((f * (0.2 + i * 0.05) + i * 77) % W);
+    const y2 = ((f * (0.08 + i * 0.03) + i * 40) % (ROWS * CELL)) + TOP_PAD;
+    const a = 0.03 + Math.sin(f * 0.04 + i) * 0.015;
+    ctx.globalAlpha = Math.max(0, a);
+    ctx.fillStyle = i % 2 === 0 ? '#c084fc' : '#f87171';
+    ctx.fillText(RUNES2[i % RUNES2.length], x2, y2);
+  }
+  ctx.restore();
+
+  // Right-edge danger zone glow
+  const grad = ctx.createLinearGradient(W - 25, 0, W, 0);
   grad.addColorStop(0, 'transparent');
-  grad.addColorStop(1, 'rgba(212,160,23,0.12)');
+  grad.addColorStop(1, 'rgba(212,160,23,0.10)');
   ctx.fillStyle = grad;
   ctx.fillRect(0, TOP_PAD, W, ROWS*CELL);
 
-  // Top soil
-  ctx.fillStyle = '#0a0612';
-  ctx.fillRect(0, 0, W, TOP_PAD);
-  // Gold top line
-  ctx.fillStyle = 'rgba(212,160,23,0.4)';
-  ctx.fillRect(0, TOP_PAD, W, 1);
+  // Left-edge spawn glow (where curses come from)
+  const leftGrad = ctx.createLinearGradient(W, 0, W - 30, 0);
+  leftGrad.addColorStop(0, 'transparent');
+  leftGrad.addColorStop(1, 'rgba(192,57,43,0.08)');
+  ctx.fillStyle = leftGrad;
+  ctx.fillRect(W - 30, TOP_PAD, 30, ROWS * CELL);
 
-  // ---- PLANTS ----
+  // Top bar
+  ctx.fillStyle = '#060314';
+  ctx.fillRect(0, 0, W, TOP_PAD);
+  ctx.fillStyle = 'rgba(212,160,23,0.35)';
+  ctx.fillRect(0, TOP_PAD, W, 1);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  if (state.shakeTimer > 0) {
+    const s = Math.sin(state.shakeTimer * 1.8) * 4 * (state.shakeTimer / 18);
+    ctx.save(); ctx.translate(s, s * 0.5);
+  }
+
+  drawGameBackground();
+
+  // Plants
   state.plants.forEach(p => {
     const def = PLANTS[p.type];
-    const x = p.col*CELL + 7, y = p.row*CELL + TOP_PAD + 7, s = CELL - 14;
-    const cx2 = x + s/2, cy2 = y + s/2;
+    const x = p.col*CELL+8, y = p.row*CELL+TOP_PAD+8, s = CELL-16;
+    const cx2 = x+s/2, cy2 = y+s/2;
 
-    // Glow aura behind character
-    ctx.save();
-    ctx.globalAlpha = 0.25;
-    const auraColors = {
-      sunflower: '#d4769a', peashooter: '#c0392b', wallnut: '#7c3aed',
-      snowpea: '#1a8cff', cherry: '#ff4444'
-    };
-    const radG = ctx.createRadialGradient(cx2, cy2, 0, cx2, cy2, s * 0.7);
-    radG.addColorStop(0, auraColors[p.type] || '#888');
-    radG.addColorStop(1, 'transparent');
-    ctx.fillStyle = radG;
-    ctx.beginPath(); ctx.arc(cx2, cy2, s*0.75, 0, Math.PI*2); ctx.fill();
-    ctx.restore();
+    ctx.save(); ctx.globalAlpha = 0.28;
+    const ac = { sunflower:'#d4769a', peashooter:'#c0392b', wallnut:'#7c3aed', snowpea:'#1a8cff', cherry:'#ff4444' };
+    const rg = ctx.createRadialGradient(cx2, cy2, 0, cx2, cy2, s*0.75);
+    rg.addColorStop(0, ac[p.type]||'#888'); rg.addColorStop(1, 'transparent');
+    ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(cx2, cy2, s*0.8, 0, Math.PI*2); ctx.fill(); ctx.restore();
 
-    // Cherry bomb pulse ring
     if (p.type === 'cherry' && p.explodeTimer > 0) {
-      const pulse = Math.sin(state.frame * 0.3) * 0.3 + 0.7;
-      ctx.save();
-      ctx.globalAlpha = pulse * 0.4;
-      ctx.strokeStyle = '#ff4444';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(cx2, cy2, s * 0.55 + Math.sin(state.frame * 0.5) * 4, 0, Math.PI*2);
-      ctx.stroke();
-      ctx.restore();
+      const pulse = Math.sin(state.frame*0.3)*0.3+0.7;
+      ctx.save(); ctx.globalAlpha = pulse*0.45; ctx.strokeStyle = '#ff4444'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(cx2, cy2, s*0.55+Math.sin(state.frame*0.5)*4, 0, Math.PI*2); ctx.stroke(); ctx.restore();
     }
 
-    // Card background
-    ctx.fillStyle = def.color + '22';
-    drawRoundRect(x, y, s, s, 8);
-    ctx.fill();
-    ctx.strokeStyle = def.color + '88';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
+    ctx.fillStyle = def.color+'22'; drawRoundRect(x, y, s, s, 9); ctx.fill();
+    ctx.strokeStyle = def.color+'88'; ctx.lineWidth = 1.5; ctx.stroke();
 
-    // Gojo Infinity shimmer
     if (p.type === 'snowpea') {
-      ctx.save();
-      ctx.globalAlpha = 0.12 + Math.sin(state.frame * 0.08) * 0.07;
+      ctx.save(); ctx.globalAlpha = 0.12+Math.sin(state.frame*0.08)*0.07;
       const inf = ctx.createLinearGradient(x, y, x+s, y+s);
-      inf.addColorStop(0, '#1a8cff');
-      inf.addColorStop(0.5, '#ffffff');
-      inf.addColorStop(1, '#1a8cff');
-      ctx.fillStyle = inf;
-      drawRoundRect(x, y, s, s, 8);
-      ctx.fill();
-      ctx.restore();
+      inf.addColorStop(0,'#1a8cff'); inf.addColorStop(0.5,'#ffffff'); inf.addColorStop(1,'#1a8cff');
+      ctx.fillStyle = inf; drawRoundRect(x, y, s, s, 9); ctx.fill(); ctx.restore();
     }
 
-    // Icon emoji
-    ctx.font = '26px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(CHAR_ICONS[p.type] || '?', cx2, cy2 - 2);
+    ctx.font = '28px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(CHAR_ICONS[p.type]||'?', cx2, cy2-2);
 
-    // Name label
-    ctx.font = 'bold 7.5px Rajdhani, sans-serif';
-    ctx.fillStyle = 'rgba(255,255,255,0.7)';
-    ctx.fillText(def.label || '', cx2, y + s - 8);
+    ctx.font = 'bold 8px Rajdhani,sans-serif'; ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.fillText(def.label||'', cx2, y+s-9);
 
-    // HP bar
-    const hpRatio = Math.max(0, p.hp / p.maxHp);
-    ctx.fillStyle = 'rgba(0,0,0,0.5)';
-    ctx.fillRect(x, y + s + 2, s, 3);
-    const hpColor = hpRatio > 0.5 ? '#22c55e' : hpRatio > 0.25 ? '#eab308' : '#ef4444';
-    ctx.fillStyle = hpColor;
-    ctx.fillRect(x, y + s + 2, s * hpRatio, 3);
+    const hpR = Math.max(0, p.hp/p.maxHp);
+    ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(x, y+s+2, s, 4);
+    ctx.fillStyle = hpR > 0.5 ? '#22c55e' : hpR > 0.25 ? '#eab308' : '#ef4444';
+    ctx.fillRect(x, y+s+2, s*hpR, 4);
   });
 
-  // ---- BULLETS ----
+  // Bullets
   state.bullets.forEach(b => {
     ctx.save();
     if (b.slow) {
-      // Gojo Infinity orb
-      const rg = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, 7);
-      rg.addColorStop(0, '#ffffff');
-      rg.addColorStop(0.4, '#1a8cff');
-      rg.addColorStop(1, 'rgba(26,140,255,0)');
-      ctx.fillStyle = rg;
-      ctx.beginPath(); ctx.arc(b.x, b.y, 7, 0, Math.PI*2); ctx.fill();
-      // Inner dot
-      ctx.fillStyle = '#fff';
-      ctx.beginPath(); ctx.arc(b.x, b.y, 2.5, 0, Math.PI*2); ctx.fill();
+      const rg = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, 8);
+      rg.addColorStop(0,'#ffffff'); rg.addColorStop(0.4,'#1a8cff'); rg.addColorStop(1,'rgba(26,140,255,0)');
+      ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(b.x, b.y, 8, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(b.x, b.y, 3, 0, Math.PI*2); ctx.fill();
     } else {
-      // Yuji's divergent fist — red CE strike
-      const rg = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, 6);
-      rg.addColorStop(0, '#fff');
-      rg.addColorStop(0.3, '#ff6060');
-      rg.addColorStop(1, 'rgba(192,57,43,0)');
-      ctx.fillStyle = rg;
-      ctx.beginPath(); ctx.arc(b.x, b.y, 6, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#fff';
-      ctx.beginPath(); ctx.arc(b.x, b.y, 2, 0, Math.PI*2); ctx.fill();
+      const rg = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, 7);
+      rg.addColorStop(0,'#fff'); rg.addColorStop(0.3,'#ff6060'); rg.addColorStop(1,'rgba(192,57,43,0)');
+      ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(b.x, b.y, 7, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(b.x, b.y, 2.5, 0, Math.PI*2); ctx.fill();
     }
     ctx.restore();
   });
 
-  // ---- CURSES (zombies) ----
+  // Curses
   state.zombies.forEach(z => {
-    const cx = z.x, cy = z.row*CELL+TOP_PAD+CELL/2;
-    const cd = z.cdef;
-    const sz = cd === CURSE_TYPES[2] ? 34 : cd === CURSE_TYPES[1] ? 30 : 26;
+    const cx = z.x, cy = z.row*CELL+TOP_PAD+CELL/2, cd = z.cdef;
+    const sz = cd === CURSE_TYPES[2] ? 37 : cd === CURSE_TYPES[1] ? 33 : 28;
 
-    // Slow shimmer
     if (z.slowTimer > 0) {
-      ctx.save();
-      ctx.globalAlpha = 0.3;
-      const sg = ctx.createRadialGradient(cx, cy, 0, cx, cy, sz+8);
-      sg.addColorStop(0, '#1a8cff');
-      sg.addColorStop(1, 'transparent');
-      ctx.fillStyle = sg;
-      ctx.beginPath(); ctx.arc(cx, cy, sz+8, 0, Math.PI*2); ctx.fill();
-      ctx.restore();
+      ctx.save(); ctx.globalAlpha = 0.3;
+      const sg = ctx.createRadialGradient(cx, cy, 0, cx, cy, sz+9);
+      sg.addColorStop(0,'#1a8cff'); sg.addColorStop(1,'transparent');
+      ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(cx, cy, sz+9, 0, Math.PI*2); ctx.fill(); ctx.restore();
     }
 
-    // Curse aura
-    ctx.save();
-    ctx.globalAlpha = 0.2 + Math.sin(state.frame * 0.07 + z.row) * 0.05;
-    const aura = ctx.createRadialGradient(cx, cy, 0, cx, cy, sz * 1.2);
-    aura.addColorStop(0, cd.glow);
-    aura.addColorStop(1, 'transparent');
-    ctx.fillStyle = aura;
-    ctx.beginPath(); ctx.arc(cx, cy, sz*1.2, 0, Math.PI*2); ctx.fill();
-    ctx.restore();
+    ctx.save(); ctx.globalAlpha = 0.2+Math.sin(state.frame*0.07+z.row)*0.05;
+    const aura = ctx.createRadialGradient(cx, cy, 0, cx, cy, sz*1.2);
+    aura.addColorStop(0, cd.glow); aura.addColorStop(1,'transparent');
+    ctx.fillStyle = aura; ctx.beginPath(); ctx.arc(cx, cy, sz*1.2, 0, Math.PI*2); ctx.fill(); ctx.restore();
 
-    // Body card
-    ctx.fillStyle = cd.color + 'cc';
-    drawRoundRect(cx - sz/2, cy - sz/2, sz, sz, 6);
-    ctx.fill();
-    ctx.strokeStyle = cd.glow + 'cc';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
+    ctx.fillStyle = cd.color+'cc'; drawRoundRect(cx-sz/2, cy-sz/2, sz, sz, 7); ctx.fill();
+    ctx.strokeStyle = cd.glow+'cc'; ctx.lineWidth = 1.5; ctx.stroke();
 
-    // Emoji
-    ctx.font = (sz - 4) + 'px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    ctx.font = (sz-4)+'px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(cd.emoji, cx, cy);
 
-    // HP bar
-    ctx.fillStyle = 'rgba(0,0,0,0.6)';
-    ctx.fillRect(cx - sz/2, cy + sz/2 + 2, sz, 3);
-    ctx.fillStyle = cd.glow;
-    ctx.fillRect(cx - sz/2, cy + sz/2 + 2, sz * Math.max(0, z.hp/z.maxHp), 3);
+    ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillRect(cx-sz/2, cy+sz/2+2, sz, 4);
+    ctx.fillStyle = cd.glow; ctx.fillRect(cx-sz/2, cy+sz/2+2, sz*Math.max(0,z.hp/z.maxHp), 4);
 
-    // Special grade label
     if (z.cdef === CURSE_TYPES[2]) {
-      ctx.font = 'bold 6px Rajdhani, sans-serif';
-      ctx.fillStyle = '#1a8cff';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('SPECIAL', cx, cy - sz/2 - 5);
+      ctx.font = 'bold 7px Rajdhani,sans-serif'; ctx.fillStyle = '#1a8cff';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('SPECIAL', cx, cy-sz/2-6);
     }
   });
 
-  // ---- CE DROPS ----
+  // CE Drops
   state.sunDrops.forEach(s => {
-    ctx.save();
-    ctx.globalAlpha = Math.min(1, s.timer / 30);
-    // Glow
-    const sg = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 18);
-    sg.addColorStop(0, 'rgba(212,160,23,0.4)');
-    sg.addColorStop(1, 'transparent');
-    ctx.fillStyle = sg;
-    ctx.beginPath(); ctx.arc(s.x, s.y, 18, 0, Math.PI*2); ctx.fill();
-    ctx.font = '18px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('✦', s.x, s.y);
-    ctx.restore();
+    ctx.save(); ctx.globalAlpha = Math.min(1, s.timer/30);
+    const sg = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 20);
+    sg.addColorStop(0,'rgba(212,160,23,0.4)'); sg.addColorStop(1,'transparent');
+    ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(s.x, s.y, 20, 0, Math.PI*2); ctx.fill();
+    ctx.font = '20px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('✦', s.x, s.y); ctx.restore();
   });
 
-  // ---- BETWEEN WAVES OVERLAY ----
+  // Between waves overlay
   if (state.betweenWaves) {
-    ctx.fillStyle = 'rgba(10,6,18,0.72)';
-    ctx.fillRect(0, 0, W, H);
-
-    // Decorative lines
-    ctx.strokeStyle = 'rgba(212,160,23,0.3)';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(W/2-180, H/2-22, 360, 44);
-    ctx.strokeStyle = 'rgba(212,160,23,0.1)';
-    ctx.strokeRect(W/2-176, H/2-18, 352, 36);
-
-    ctx.font = 'bold 16px Cinzel Decorative, serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#d4a017';
-    ctx.fillText(`— Curse ${state.wave} Exorcised —`, W/2, H/2 - 6);
-    ctx.font = '12px Rajdhani, sans-serif';
-    ctx.fillStyle = '#9080b0';
-    ctx.fillText('Prepare for the next incursion...', W/2, H/2 + 12);
+    ctx.fillStyle = 'rgba(6,3,18,0.80)'; ctx.fillRect(0, 0, W, H);
+    // Decorative rings
+    ctx.save();
+    ctx.strokeStyle = 'rgba(212,160,23,0.15)'; ctx.lineWidth = 0.8;
+    ctx.beginPath(); ctx.arc(W/2, H/2, 90, 0, Math.PI*2); ctx.stroke();
+    ctx.strokeStyle = 'rgba(124,58,237,0.12)'; ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.arc(W/2, H/2, 70, 0, Math.PI*2); ctx.stroke();
+    ctx.restore();
+    ctx.strokeStyle = 'rgba(212,160,23,0.3)'; ctx.lineWidth = 1;
+    ctx.strokeRect(W/2-200, H/2-24, 400, 48);
+    ctx.font = 'bold 17px Cinzel Decorative,serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#d4a017'; ctx.fillText(`— Curse ${state.wave} Exorcised —`, W/2, H/2-7);
+    ctx.font = '13px Rajdhani,sans-serif'; ctx.fillStyle = '#9080b0';
+    ctx.fillText('Prepare for the next incursion...', W/2, H/2+13);
   }
 
-  // ---- GAME OVER / WIN OVERLAY ----
+  // Game over overlay
   if (state.over) {
-    ctx.fillStyle = 'rgba(10,6,18,0.78)';
-    ctx.fillRect(0, 0, W, H);
-
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
+    ctx.fillStyle = 'rgba(6,3,18,0.88)'; ctx.fillRect(0, 0, W, H);
+    // Decorative circles
+    ctx.save();
+    const oc = state.won ? '212,160,23' : '192,57,43';
+    ctx.strokeStyle = `rgba(${oc},0.2)`; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(W/2, H/2, 110, 0, Math.PI*2); ctx.stroke();
+    ctx.strokeStyle = `rgba(${oc},0.1)`; ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.arc(W/2, H/2, 90, 0, Math.PI*2); ctx.stroke();
+    ctx.restore();
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     if (state.won) {
-      ctx.font = 'bold 24px Cinzel Decorative, serif';
-      ctx.fillStyle = '#d4a017';
-      ctx.fillText('⛩ MISSION COMPLETE ⛩', W/2, H/2 - 18);
-      ctx.font = '13px Rajdhani, sans-serif';
-      ctx.fillStyle = '#a3e635';
-      ctx.fillText('All Curses have been exorcised. Tokyo is safe.', W/2, H/2 + 8);
+      ctx.font = 'bold 26px Cinzel Decorative,serif'; ctx.fillStyle = '#d4a017';
+      ctx.fillText('⛩ MISSION COMPLETE ⛩', W/2, H/2-20);
+      ctx.font = '14px Rajdhani,sans-serif'; ctx.fillStyle = '#a3e635';
+      ctx.fillText('All Curses have been exorcised. Tokyo is safe.', W/2, H/2+10);
     } else {
-      ctx.font = 'bold 22px Cinzel Decorative, serif';
-      ctx.fillStyle = '#c0392b';
-      ctx.fillText('💀 BARRIER COLLAPSED 💀', W/2, H/2 - 18);
-      ctx.font = '13px Rajdhani, sans-serif';
-      ctx.fillStyle = '#f87171';
-      ctx.fillText('The Curses have broken through the barrier.', W/2, H/2 + 8);
+      ctx.font = 'bold 24px Cinzel Decorative,serif'; ctx.fillStyle = '#c0392b';
+      ctx.fillText('💀 BARRIER COLLAPSED 💀', W/2, H/2-20);
+      ctx.font = '14px Rajdhani,sans-serif'; ctx.fillStyle = '#f87171';
+      ctx.fillText('The Curses have broken through the barrier.', W/2, H/2+10);
     }
-    ctx.font = '11px Rajdhani, sans-serif';
-    ctx.fillStyle = '#6050a0';
-    ctx.fillText('Click ↺ Restart to try again', W/2, H/2 + 28);
+    ctx.font = '12px Rajdhani,sans-serif'; ctx.fillStyle = '#6050a0';
+    ctx.fillText('Click ↺ Restart to try again', W/2, H/2+34);
   }
 
   if (state.shakeTimer > 0) ctx.restore();
@@ -837,20 +1100,14 @@ function togglePause() {
 }
 
 function startGame() {
-  initState();
-  updateHUD();
+  initState(); updateHUD();
   document.getElementById('wave-val').textContent = 1;
   document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
   setMsg('Select a sorcerer and click a cell to deploy!');
   document.querySelector('#btn-row .ctrl').textContent = '⏸ Pause';
 }
 
-function loop() {
-  update();
-  draw();
-  requestAnimationFrame(loop);
-}
-
+function loop() { update(); draw(); requestAnimationFrame(loop); }
 initState();
 loop();
 </script>
