@@ -3,73 +3,312 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plants vs Zombies - Block Edition</title>
+<title>Veil Of Curses — JJK Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #1a1a2e; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; padding: 20px; font-family: system-ui, sans-serif; color: #fff; }
-  h1 { font-size: 22px; margin-bottom: 12px; color: #fbbf24; letter-spacing: 1px; }
-  #hud { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
-  #sun-display { background: #fbbf24; color: #78350f; border-radius: 20px; padding: 4px 14px; font-weight: 600; font-size: 14px; border: 1.5px solid #d97706; }
-  #wave-display { font-size: 13px; color: #a3e635; }
-  #lives-display { font-size: 13px; color: #f87171; margin-left: auto; }
-  #shop { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
-  .plant-card { border: 1.5px solid #444; border-radius: 8px; padding: 6px 10px; font-size: 12px; cursor: pointer; background: #2a2a3e; color: #fff; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 68px; transition: border-color 0.15s, background 0.15s; }
-  .plant-card:hover { border-color: #888; background: #3a3a4e; }
-  .plant-card.selected { border-color: #22c55e; background: #14532d; color: #bbf7d0; }
-  .plant-card .cost { font-size: 11px; color: #fbbf24; font-weight: 600; }
-  .plant-card .icon { font-size: 20px; line-height: 1; }
-  #canvas-wrap { border-radius: 10px; overflow: hidden; border: 2px solid #444; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a12;
+    --panel: #0f0f1e;
+    --border: #2a1a4a;
+    --gold: #d4a017;
+    --gold2: #f5c842;
+    --red: #c0392b;
+    --red2: #ff4444;
+    --blue: #1a8cff;
+    --teal: #00c9a7;
+    --purple: #7c3aed;
+    --text: #e8e0f0;
+    --subtext: #9080b0;
+    --curse-dark: #1a0a2e;
+    --curse-mid: #2d1060;
+  }
+
+  body {
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(124,58,237,0.13) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 30% at 80% 100%, rgba(192,57,43,0.09) 0%, transparent 60%),
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 39px, rgba(255,255,255,0.015) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 39px, rgba(255,255,255,0.015) 40px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 18px 12px 24px;
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* === TITLE === */
+  .title-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #d4a017 0%, #f5c842 40%, #c0392b 80%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 18px rgba(212,160,23,0.35));
+    line-height: 1.1;
+    text-align: center;
+  }
+  .subtitle {
+    font-size: 11px;
+    letter-spacing: 5px;
+    color: var(--subtext);
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+  .title-line {
+    width: 300px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--red), transparent);
+    margin: 6px 0 0;
+    opacity: 0.6;
+  }
+
+  /* === HUD === */
+  #hud {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 640px;
+    padding: 8px 14px;
+    background: rgba(15,10,30,0.8);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    backdrop-filter: blur(6px);
+  }
+  .hud-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  #sun-display { background: rgba(212,160,23,0.15); border: 1px solid rgba(212,160,23,0.4); color: var(--gold2); }
+  #wave-display { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.4); color: #c084fc; }
+  #lives-display { margin-left: auto; background: rgba(192,57,43,0.15); border: 1px solid rgba(192,57,43,0.4); color: #f87171; }
+
+  /* === SHOP === */
+  #shop {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 660px;
+  }
+
+  .plant-card {
+    border: 1.5px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 7px 10px 6px;
+    font-size: 11px;
+    cursor: pointer;
+    background: rgba(15,10,30,0.85);
+    color: var(--subtext);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 74px;
+    transition: all 0.18s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .plant-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%);
+  }
+  .plant-card:hover {
+    border-color: rgba(212,160,23,0.5);
+    background: rgba(40,25,60,0.95);
+    color: var(--text);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(124,58,237,0.2);
+  }
+  .plant-card.selected {
+    border-color: var(--gold);
+    background: rgba(212,160,23,0.12);
+    color: var(--gold2);
+    box-shadow: 0 0 16px rgba(212,160,23,0.3), inset 0 0 10px rgba(212,160,23,0.06);
+  }
+  .plant-card .cost {
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .plant-card .icon { font-size: 22px; line-height: 1.1; }
+  .plant-card .name { font-size: 11px; font-weight: 700; letter-spacing: 0.3px; color: inherit; }
+
+  /* Shovel special */
+  .plant-card[data-type="shovel"] .cost { color: var(--teal); }
+  .plant-card[data-type="shovel"]:hover { border-color: var(--teal); box-shadow: 0 6px 20px rgba(0,201,167,0.2); }
+  .plant-card[data-type="shovel"].selected { border-color: var(--teal); background: rgba(0,201,167,0.1); color: var(--teal); box-shadow: 0 0 16px rgba(0,201,167,0.25); }
+
+  /* === CANVAS === */
+  #canvas-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(124,58,237,0.35);
+    box-shadow:
+      0 0 40px rgba(124,58,237,0.18),
+      0 0 0 1px rgba(212,160,23,0.07),
+      inset 0 0 30px rgba(0,0,0,0.4);
+    position: relative;
+  }
   canvas { display: block; }
-  #msg { text-align: center; font-size: 14px; color: #fbbf24; margin-top: 8px; min-height: 20px; }
+
+  /* === MSG === */
+  #msg {
+    text-align: center;
+    font-size: 13px;
+    color: var(--gold);
+    margin-top: 8px;
+    min-height: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 10px rgba(212,160,23,0.4);
+  }
+
+  /* === BUTTONS === */
   #btn-row { display: flex; gap: 8px; margin-top: 10px; }
-  button.ctrl { padding: 7px 18px; border-radius: 8px; border: 1px solid #555; background: #2a2a3e; color: #fff; cursor: pointer; font-size: 13px; transition: background 0.15s; }
-  button.ctrl:hover { background: #3a3a4e; }
-  #instructions { margin-top: 14px; font-size: 12px; color: #888; max-width: 640px; text-align: center; line-height: 1.7; }
-  #instructions span { color: #a3e635; font-weight: 600; }
+  button.ctrl {
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(212,160,23,0.3);
+    background: rgba(15,10,30,0.9);
+    color: var(--gold2);
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: all 0.18s;
+  }
+  button.ctrl:hover {
+    background: rgba(212,160,23,0.12);
+    border-color: var(--gold);
+    box-shadow: 0 0 14px rgba(212,160,23,0.25);
+  }
+
+  /* === LORE CARDS === */
+  #lore { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; justify-content: center; max-width: 660px; }
+  .lore-card {
+    background: rgba(10,8,20,0.7);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 10.5px;
+    color: var(--subtext);
+    min-width: 88px;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .lore-card .lname { color: var(--text); font-weight: 700; font-size: 11.5px; }
+  .lore-card .lrole { color: #7c3aed; font-size: 10px; }
+
+  /* === INSTRUCTIONS === */
+  #instructions {
+    margin-top: 10px;
+    font-size: 11.5px;
+    color: var(--subtext);
+    max-width: 640px;
+    text-align: center;
+    line-height: 1.75;
+  }
+  #instructions span { color: var(--gold); font-weight: 700; }
+
+  /* Decorative sigil corners */
+  .sigil { position: absolute; width: 50px; height: 50px; opacity: 0.07; pointer-events: none; }
 </style>
 </head>
 <body>
-<h1>🌻 Plants vs Zombies — Block Edition</h1>
+
+<div class="title-wrap">
+  <h1>⛩ VEIL OF CURSES ⛩</h1>
+  <div class="subtitle">Jujutsu Kaisen — Tower Defense</div>
+  <div class="title-line"></div>
+</div>
 
 <div id="hud">
-  <div id="sun-display">☀️ <span id="sun-val">150</span></div>
-  <div id="wave-display">Wave <span id="wave-val">1</span> / 5</div>
-  <div id="lives-display">🏠 Lives: <span id="lives-val">5</span></div>
+  <div class="hud-pill" id="sun-display">✦ <span id="sun-val">150</span> CE</div>
+  <div class="hud-pill" id="wave-display">⚔ Curse <span id="wave-val">1</span> / 5</div>
+  <div class="hud-pill" id="lives-display">🏯 Barrier: <span id="lives-val">5</span></div>
 </div>
 
 <div id="shop">
   <div class="plant-card" data-type="sunflower" onclick="selectPlant('sunflower')">
-    <span class="icon">🌻</span><span>Shoko</span><span class="cost">☀️ 50</span>
+    <span class="icon">🌸</span>
+    <span class="name">Shoko</span>
+    <span class="cost">✦ 50</span>
   </div>
   <div class="plant-card" data-type="peashooter" onclick="selectPlant('peashooter')">
-    <span class="icon">🟢</span><span>Yuji</span><span class="cost">☀️ 100</span>
+    <span class="icon">👊</span>
+    <span class="name">Yuji</span>
+    <span class="cost">✦ 100</span>
   </div>
   <div class="plant-card" data-type="wallnut" onclick="selectPlant('wallnut')">
-    <span class="icon">🌰</span><span>Todo</span><span class="cost">☀️ 50</span>
+    <span class="icon">🛡</span>
+    <span class="name">Todo</span>
+    <span class="cost">✦ 50</span>
   </div>
   <div class="plant-card" data-type="snowpea" onclick="selectPlant('snowpea')">
-    <span class="icon">❄️</span><span>Gojo</span><span class="cost">☀️ 175</span>
+    <span class="icon">♾</span>
+    <span class="name">Gojo</span>
+    <span class="cost">✦ 175</span>
   </div>
   <div class="plant-card" data-type="cherry" onclick="selectPlant('cherry')">
-    <span class="icon">🍒</span><span>Sukuna</span><span class="cost">☀️ 150</span>
+    <span class="icon">💀</span>
+    <span class="name">Sukuna</span>
+    <span class="cost">✦ 150</span>
   </div>
   <div class="plant-card" data-type="shovel" onclick="selectPlant('shovel')">
-    <span class="icon">⛏️</span><span>Shovel</span><span class="cost">free</span>
+    <span class="icon">🗡</span>
+    <span class="name">Remove</span>
+    <span class="cost" style="color:var(--teal)">free</span>
   </div>
 </div>
 
 <div id="canvas-wrap"><canvas id="c"></canvas></div>
-<div id="msg">Select a plant and click a lawn cell to place it!</div>
+<div id="msg">Select a sorcerer and click a cell to deploy!</div>
 <div id="btn-row">
   <button class="ctrl" onclick="togglePause()">⏸ Pause</button>
   <button class="ctrl" onclick="startGame()">↺ Restart</button>
 </div>
 
+<div id="lore">
+  <div class="lore-card"><span class="lname">🌸 Shoko</span><br><span class="lrole">Reverse CE · Healer</span><br>Generates cursed energy for the team</div>
+  <div class="lore-card"><span class="lname">👊 Yuji</span><br><span class="lrole">Divergent Fist</span><br>Basic attacker — raw power strikes</div>
+  <div class="lore-card"><span class="lname">🛡 Todo</span><br><span class="lrole">Boogie Woogie</span><br>Tanky barrier — absorbs hits</div>
+  <div class="lore-card"><span class="lname">♾ Gojo</span><br><span class="lrole">Infinity · Slow</span><br>Slows curses with Limitless</div>
+  <div class="lore-card"><span class="lname">💀 Sukuna</span><br><span class="lrole">Malevolent Shrine</span><br>Annihilates all curses in range</div>
+</div>
+
 <div id="instructions">
-  <span>How to play:</span> Select a plant from the shop, then click any green cell to place it.
-  Click ☀️ sun drops to collect sun. Sunflowers generate extra sun over time.
-  Defend all 5 waves to win! Zombies get tougher each wave.
-  Use the <span>Shovel</span> to remove a plant from a cell.
+  <span>How to play:</span> Deploy sorcerers on the barrier grid. Click ✦ CE drops to collect energy.
+  Shoko generates extra CE. Gojo's Infinity slows curses. Sukuna detonates after 3s for massive AoE.
+  Use <span>Remove</span> to recall a sorcerer. Survive all 5 Curse Waves to win!
 </div>
 
 <script>
@@ -80,13 +319,29 @@ const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 canvas.width = W; canvas.height = H;
 
+// ---- Curse type emojis & labels ----
+const CURSE_TYPES = [
+  { type: 'weak',   emoji: '👁',  label: 'Weak Curse',    hpMult: 1,   spMult: 1,    color: '#5a3a7e', glow: '#7c3aed' },
+  { type: 'finger', emoji: '🦷',  label: 'Finger Bearer', hpMult: 2.5, spMult: 0.75, color: '#8b1a1a', glow: '#c0392b' },
+  { type: 'special',emoji: '👺',  label: 'Special Grade', hpMult: 5,   spMult: 0.6,  color: '#1a3a5a', glow: '#1a8cff' },
+];
+
 const PLANTS = {
-  sunflower:  { color: '#fbbf24', hp: 80,  cost: 50,  sunRate: 0.18, shoot: false },
-  peashooter: { color: '#22c55e', hp: 100, cost: 100, sunRate: 0,    shoot: true,  dmg: 20, speed: 3.5, slow: false },
-  wallnut:    { color: '#a16207', hp: 400, cost: 50,  sunRate: 0,    shoot: false },
-  snowpea:    { color: '#38bdf8', hp: 100, cost: 175, sunRate: 0,    shoot: true,  dmg: 18, speed: 3.5, slow: true },
-  cherry:     { color: '#ef4444', hp: 1,   cost: 150, sunRate: 0,    shoot: false, bomb: true },
+  sunflower:  { color: '#d4769a', hp: 80,  cost: 50,  sunRate: 0.18, shoot: false, label: 'Shoko' },
+  peashooter: { color: '#c0392b', hp: 100, cost: 100, sunRate: 0,    shoot: true,  dmg: 20, speed: 3.5, slow: false, label: 'Yuji' },
+  wallnut:    { color: '#4a3060', hp: 400, cost: 50,  sunRate: 0,    shoot: false, label: 'Todo' },
+  snowpea:    { color: '#1a2a5e', hp: 100, cost: 175, sunRate: 0,    shoot: true,  dmg: 18, speed: 3.5, slow: true, label: 'Gojo' },
+  cherry:     { color: '#2a0010', hp: 1,   cost: 150, sunRate: 0,    shoot: false, bomb: true, label: 'Sukuna' },
   shovel:     { color: null,      hp: 0,   cost: 0 }
+};
+
+// Character icons on canvas
+const CHAR_ICONS = {
+  sunflower:  '🌸',
+  peashooter: '👊',
+  wallnut:    '🛡',
+  snowpea:    '♾',
+  cherry:     '💀',
 };
 
 let state = {};
@@ -117,11 +372,10 @@ canvas.addEventListener('click', e => {
   const mx = (e.clientX - rect.left) * scaleX;
   const my = (e.clientY - rect.top) * scaleY;
 
-  // Check sun drops first
   let collected = false;
   state.sunDrops = state.sunDrops.filter(s => {
     const dx = mx - s.x, dy = my - s.y;
-    if (Math.sqrt(dx*dx+dy*dy) < 18) { state.sun += s.val; updateHUD(); collected = true; return false; }
+    if (Math.sqrt(dx*dx+dy*dy) < 20) { state.sun += s.val; updateHUD(); collected = true; return false; }
     return true;
   });
   if (collected) return;
@@ -136,7 +390,7 @@ canvas.addEventListener('click', e => {
     return;
   }
   const def = PLANTS[state.selected];
-  if (state.sun < def.cost) { setMsg('Not enough sun! ☀️'); return; }
+  if (state.sun < def.cost) { setMsg('Not enough Cursed Energy! ✦'); return; }
   if (state.plants.find(p => p.col === col && p.row === row)) { setMsg('Cell occupied!'); return; }
 
   state.sun -= def.cost;
@@ -146,7 +400,7 @@ canvas.addEventListener('click', e => {
     shootTimer: 0, sunTimer: 0,
     explodeTimer: def.bomb ? 90 : -1
   });
-  if (def.bomb) setMsg('Cherry Bomb planted — BOOM in 3s!');
+  if (def.bomb) setMsg('Sukuna activated — Malevolent Shrine in 3s!');
   else setMsg('');
   updateHUD();
 });
@@ -154,27 +408,31 @@ canvas.addEventListener('click', e => {
 function spawnZombie() {
   const row = Math.floor(Math.random() * ROWS);
   const wave = state.wave;
-  let hp = 80 + wave * 40;
-  let speed = 0.28 + Math.random() * 0.12;
-  let type = 'normal';
   const r = Math.random();
-  if (wave >= 2 && r < 0.2) { hp *= 2.5; speed *= 0.75; type = 'cone'; }
-  if (wave >= 3 && r < 0.12) { hp *= 5; speed *= 0.6; type = 'bucket'; }
-  state.zombies.push({ x: W + 20, row, hp, maxHp: hp, speed, type, slowTimer: 0 });
+  let cdef;
+  if (wave >= 3 && r < 0.12) cdef = CURSE_TYPES[2];
+  else if (wave >= 2 && r < 0.2) cdef = CURSE_TYPES[1];
+  else cdef = CURSE_TYPES[0];
+
+  let baseHp = 80 + wave * 40;
+  let baseSpeed = 0.28 + Math.random() * 0.12;
+  let hp = baseHp * cdef.hpMult;
+  let speed = baseSpeed * cdef.spMult;
+  state.zombies.push({ x: W + 20, row, hp, maxHp: hp, speed, cdef, slowTimer: 0 });
 }
 
 function update() {
   if (state.over || state.paused) return;
   state.frame++;
 
-  // Natural sun drops
+  // Natural CE drops
   state.sunTimer++;
   if (state.sunTimer > 280) {
     state.sunTimer = 0;
     state.sunDrops.push({ x: Math.random()*(W-60)+30, y: -10, vy: 1.2, val: 25, timer: 130 });
   }
 
-  // Sunflower sun generation
+  // Shoko CE generation
   state.plants.forEach(p => {
     if (PLANTS[p.type].sunRate > 0) {
       p.sunTimer++;
@@ -185,11 +443,10 @@ function update() {
     }
   });
 
-  // Sun drops fall & expire
   state.sunDrops.forEach(s => { s.y += s.vy; s.timer--; });
   state.sunDrops = state.sunDrops.filter(s => s.timer > 0);
 
-  // Wave spawning
+  // Wave logic
   if (!state.waveStarted && !state.betweenWaves) { state.waveStarted = true; state.waveSpawned = 0; state.waveTimer = 0; }
   if (state.waveStarted && !state.betweenWaves) {
     state.waveTimer++;
@@ -198,7 +455,7 @@ function update() {
       spawnZombie(); state.waveSpawned++; state.waveTimer = 0;
     }
     if (state.waveSpawned >= state.waveTotal + state.wave * 2 && state.zombies.length === 0) {
-      if (state.wave >= state.maxWaves) { state.won = true; state.over = true; setMsg('🎉 You win! All waves cleared!'); return; }
+      if (state.wave >= state.maxWaves) { state.won = true; state.over = true; setMsg('⛩ All Curses Exorcised! Victory!'); return; }
       state.betweenWaves = true; state.betweenTimer = 200; state.waveStarted = false;
     }
   }
@@ -207,18 +464,20 @@ function update() {
     if (state.betweenTimer <= 0) { state.wave++; state.betweenWaves = false; document.getElementById('wave-val').textContent = state.wave; }
   }
 
-  // Cherry bomb countdown
+  // Sukuna bomb
   state.plants.forEach(p => {
     if (p.type === 'cherry' && p.explodeTimer > 0) {
       p.explodeTimer--;
       if (p.explodeTimer === 0) {
         const cx = p.col*CELL+CELL/2, cy = p.row*CELL+TOP_PAD+CELL/2;
+        // Add screen shake effect flag
+        state.shakeTimer = 18;
         state.zombies = state.zombies.filter(z => {
           const dist = Math.sqrt((z.x - cx)**2 + (z.row*CELL+TOP_PAD+CELL/2 - cy)**2);
-          return dist > CELL * 2;
+          return dist > CELL * 2.2;
         });
         state.plants = state.plants.filter(q => q !== p);
-        setMsg('💥 BOOM!');
+        setMsg('💀 MALEVOLENT SHRINE — Domain Expanded!');
       }
     }
   });
@@ -235,7 +494,6 @@ function update() {
     }
   });
 
-  // Move bullets, check hits
   state.bullets.forEach(b => { b.x += b.speed; });
   state.bullets = state.bullets.filter(b => b.x < W + 20);
   state.bullets = state.bullets.filter(b => {
@@ -251,7 +509,7 @@ function update() {
     return !hit;
   });
 
-  // Move zombies, eat plants
+  // Move zombies
   state.zombies.forEach(z => {
     const spd = z.slowTimer > 0 ? z.speed * 0.4 : z.speed;
     if (z.slowTimer > 0) z.slowTimer--;
@@ -262,10 +520,11 @@ function update() {
     } else {
       z.x -= spd;
     }
-    if (z.x < -10) { z.dead = true; state.lives--; if (state.lives <= 0) { state.over = true; setMsg('💀 Game Over! The zombies got through!'); } }
+    if (z.x < -10) { z.dead = true; state.lives--; if (state.lives <= 0) { state.over = true; setMsg('🔥 Barrier Broken! The Curses won...'); } }
   });
   state.zombies = state.zombies.filter(z => z.hp > 0 && !z.dead);
 
+  if (state.shakeTimer > 0) state.shakeTimer--;
   updateHUD();
 }
 
@@ -273,141 +532,18 @@ function updateHUD() {
   document.getElementById('sun-val').textContent = Math.floor(state.sun);
   document.getElementById('lives-val').textContent = state.lives;
 }
-
 function setMsg(t) { document.getElementById('msg').textContent = t; }
 
-const LANE_COLORS = ['#bbf7d0','#a7f3d0','#d9f99d','#fef08a','#bbf7d0'];
+// ---- Lane color palette — dark cursed earth ----
+const LANE_COLORS = [
+  '#1a1028', '#1e0e24', '#1c1230', '#1a1028', '#1e0e24'
+];
+const LANE_ACCENT = [
+  'rgba(124,58,237,0.07)', 'rgba(192,57,43,0.05)',
+  'rgba(26,140,255,0.05)', 'rgba(124,58,237,0.07)', 'rgba(192,57,43,0.05)'
+];
 
-function draw() {
-  ctx.clearRect(0, 0, W, H);
-
-  // Lawn grid
-  for (let r = 0; r < ROWS; r++) {
-    ctx.fillStyle = LANE_COLORS[r];
-    ctx.fillRect(0, r*CELL+TOP_PAD, W, CELL);
-    for (let c = 0; c < COLS; c++) {
-      ctx.strokeStyle = 'rgba(0,0,0,0.09)';
-      ctx.lineWidth = 0.5;
-      ctx.strokeRect(c*CELL, r*CELL+TOP_PAD, CELL, CELL);
-    }
-  }
-
-  // Soil strip at top
-  ctx.fillStyle = '#78350f';
-  ctx.fillRect(0, 0, W, TOP_PAD);
-
-  // Plants
-  state.plants.forEach(p => {
-    const def = PLANTS[p.type];
-    const x = p.col*CELL + 8, y = p.row*CELL + TOP_PAD + 8, s = CELL - 16;
-
-    // HP bar
-    ctx.fillStyle = '#fca5a5';
-    ctx.fillRect(x, y + s + 2, s, 4);
-    ctx.fillStyle = '#22c55e';
-    ctx.fillRect(x, y + s + 2, s * Math.max(0, p.hp / p.maxHp), 4);
-
-    // Pulse for cherry bomb
-    if (p.type === 'cherry' && p.explodeTimer > 0) {
-      ctx.globalAlpha = Math.sin(state.frame * 0.25) * 0.2 + 0.8;
-    }
-
-    ctx.fillStyle = def.color;
-    roundRect(ctx, x, y, s, s, 6);
-    ctx.fill();
-    ctx.globalAlpha = 1;
-
-    // Icon
-    const icons = {
-  shoko:'🌻',     // Sunflower
-  yuji:'🟢',      // Peashooter
-  todo:'🌰',      // Wall-nut
-  gojo:'❄️',      // Snow Pea
-  sukuna:'🍒'     // Cherry Bomb
-    };
-    ctx.font = '22px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(icons[p.type] || '', x + s/2, y + s/2);
-  });
-
-  // Bullets
-  state.bullets.forEach(b => {
-    ctx.beginPath();
-    ctx.arc(b.x, b.y, 5, 0, Math.PI*2);
-    ctx.fillStyle = b.slow ? '#38bdf8' : '#16a34a';
-    ctx.fill();
-  });
-
-  // Zombies
-  state.zombies.forEach(z => {
-    const cx = z.x, cy = z.row*CELL+TOP_PAD+CELL/2;
-    const sizes = { normal: 28, cone: 32, bucket: 36 };
-    const sz = sizes[z.type] || 28;
-
-    // Slow glow
-    if (z.slowTimer > 0) {
-      ctx.fillStyle = 'rgba(56,189,248,0.25)';
-      ctx.beginPath();
-      ctx.arc(cx, cy, sz, 0, Math.PI*2);
-      ctx.fill();
-    }
-
-    // HP bar
-    ctx.fillStyle = '#7f1d1d';
-    ctx.fillRect(cx - sz/2, cy + sz/2 + 2, sz, 4);
-    ctx.fillStyle = '#dc2626';
-    ctx.fillRect(cx - sz/2, cy + sz/2 + 2, sz * Math.max(0, z.hp/z.maxHp), 4);
-
-    // Zombie body
-    const zColors = { normal: '#a3e635', cone: '#fb923c', bucket: '#94a3b8' };
-    ctx.fillStyle = zColors[z.type] || '#a3e635';
-    roundRect(ctx, cx - sz/2, cy - sz/2, sz, sz, 5);
-    ctx.fill();
-
-    ctx.font = sz + 'px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('🧟', cx, cy);
-  });
-
-  // Sun drops
-  state.sunDrops.forEach(s => {
-    ctx.globalAlpha = Math.min(1, s.timer / 30);
-    ctx.font = '22px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('☀️', s.x, s.y);
-    ctx.globalAlpha = 1;
-  });
-
-  // Between-wave overlay
-  if (state.betweenWaves) {
-    ctx.fillStyle = 'rgba(0,0,0,0.4)';
-    ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = '#fbbf24';
-    ctx.font = 'bold 20px system-ui';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(`Wave ${state.wave} cleared! Next wave incoming...`, W/2, H/2);
-  }
-
-  // Game over / win overlay
-  if (state.over) {
-    ctx.fillStyle = 'rgba(0,0,0,0.55)';
-    ctx.fillRect(0, 0, W, H);
-    ctx.font = 'bold 28px system-ui';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = state.won ? '#fbbf24' : '#f87171';
-    ctx.fillText(state.won ? '🎉 YOU WIN!' : '💀 GAME OVER', W/2, H/2 - 16);
-    ctx.font = '16px system-ui';
-    ctx.fillStyle = '#ccc';
-    ctx.fillText('Click ↺ Restart to play again', W/2, H/2 + 20);
-  }
-}
-
-function roundRect(ctx, x, y, w, h, r) {
+function drawRoundRect(x, y, w, h, r) {
   ctx.beginPath();
   ctx.moveTo(x+r, y);
   ctx.lineTo(x+w-r, y); ctx.arcTo(x+w, y, x+w, y+r, r);
@@ -417,11 +553,287 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Screen shake for Sukuna bomb
+  if (state.shakeTimer > 0) {
+    const s = Math.sin(state.shakeTimer * 1.8) * 4 * (state.shakeTimer / 18);
+    ctx.save();
+    ctx.translate(s, s * 0.5);
+  }
+
+  // Lawn grid — dark cursed aesthetic
+  for (let r = 0; r < ROWS; r++) {
+    // Base row color
+    ctx.fillStyle = LANE_COLORS[r];
+    ctx.fillRect(0, r*CELL+TOP_PAD, W, CELL);
+    // Accent overlay
+    ctx.fillStyle = LANE_ACCENT[r];
+    ctx.fillRect(0, r*CELL+TOP_PAD, W, CELL);
+
+    // Faint lane divider
+    ctx.fillStyle = 'rgba(255,255,255,0.03)';
+    ctx.fillRect(0, r*CELL+TOP_PAD, W, 1);
+    ctx.fillRect(0, (r+1)*CELL+TOP_PAD-1, W, 1);
+
+    for (let c = 0; c < COLS; c++) {
+      ctx.strokeStyle = 'rgba(124,58,237,0.08)';
+      ctx.lineWidth = 0.5;
+      ctx.strokeRect(c*CELL, r*CELL+TOP_PAD, CELL, CELL);
+    }
+  }
+
+  // Barrier strip at right edge
+  const grad = ctx.createLinearGradient(W-18, 0, W, 0);
+  grad.addColorStop(0, 'transparent');
+  grad.addColorStop(1, 'rgba(212,160,23,0.12)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, TOP_PAD, W, ROWS*CELL);
+
+  // Top soil
+  ctx.fillStyle = '#0a0612';
+  ctx.fillRect(0, 0, W, TOP_PAD);
+  // Gold top line
+  ctx.fillStyle = 'rgba(212,160,23,0.4)';
+  ctx.fillRect(0, TOP_PAD, W, 1);
+
+  // ---- PLANTS ----
+  state.plants.forEach(p => {
+    const def = PLANTS[p.type];
+    const x = p.col*CELL + 7, y = p.row*CELL + TOP_PAD + 7, s = CELL - 14;
+    const cx2 = x + s/2, cy2 = y + s/2;
+
+    // Glow aura behind character
+    ctx.save();
+    ctx.globalAlpha = 0.25;
+    const auraColors = {
+      sunflower: '#d4769a', peashooter: '#c0392b', wallnut: '#7c3aed',
+      snowpea: '#1a8cff', cherry: '#ff4444'
+    };
+    const radG = ctx.createRadialGradient(cx2, cy2, 0, cx2, cy2, s * 0.7);
+    radG.addColorStop(0, auraColors[p.type] || '#888');
+    radG.addColorStop(1, 'transparent');
+    ctx.fillStyle = radG;
+    ctx.beginPath(); ctx.arc(cx2, cy2, s*0.75, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+
+    // Cherry bomb pulse ring
+    if (p.type === 'cherry' && p.explodeTimer > 0) {
+      const pulse = Math.sin(state.frame * 0.3) * 0.3 + 0.7;
+      ctx.save();
+      ctx.globalAlpha = pulse * 0.4;
+      ctx.strokeStyle = '#ff4444';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx2, cy2, s * 0.55 + Math.sin(state.frame * 0.5) * 4, 0, Math.PI*2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Card background
+    ctx.fillStyle = def.color + '22';
+    drawRoundRect(x, y, s, s, 8);
+    ctx.fill();
+    ctx.strokeStyle = def.color + '88';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Gojo Infinity shimmer
+    if (p.type === 'snowpea') {
+      ctx.save();
+      ctx.globalAlpha = 0.12 + Math.sin(state.frame * 0.08) * 0.07;
+      const inf = ctx.createLinearGradient(x, y, x+s, y+s);
+      inf.addColorStop(0, '#1a8cff');
+      inf.addColorStop(0.5, '#ffffff');
+      inf.addColorStop(1, '#1a8cff');
+      ctx.fillStyle = inf;
+      drawRoundRect(x, y, s, s, 8);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Icon emoji
+    ctx.font = '26px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(CHAR_ICONS[p.type] || '?', cx2, cy2 - 2);
+
+    // Name label
+    ctx.font = 'bold 7.5px Rajdhani, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.fillText(def.label || '', cx2, y + s - 8);
+
+    // HP bar
+    const hpRatio = Math.max(0, p.hp / p.maxHp);
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillRect(x, y + s + 2, s, 3);
+    const hpColor = hpRatio > 0.5 ? '#22c55e' : hpRatio > 0.25 ? '#eab308' : '#ef4444';
+    ctx.fillStyle = hpColor;
+    ctx.fillRect(x, y + s + 2, s * hpRatio, 3);
+  });
+
+  // ---- BULLETS ----
+  state.bullets.forEach(b => {
+    ctx.save();
+    if (b.slow) {
+      // Gojo Infinity orb
+      const rg = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, 7);
+      rg.addColorStop(0, '#ffffff');
+      rg.addColorStop(0.4, '#1a8cff');
+      rg.addColorStop(1, 'rgba(26,140,255,0)');
+      ctx.fillStyle = rg;
+      ctx.beginPath(); ctx.arc(b.x, b.y, 7, 0, Math.PI*2); ctx.fill();
+      // Inner dot
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(b.x, b.y, 2.5, 0, Math.PI*2); ctx.fill();
+    } else {
+      // Yuji's divergent fist — red CE strike
+      const rg = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, 6);
+      rg.addColorStop(0, '#fff');
+      rg.addColorStop(0.3, '#ff6060');
+      rg.addColorStop(1, 'rgba(192,57,43,0)');
+      ctx.fillStyle = rg;
+      ctx.beginPath(); ctx.arc(b.x, b.y, 6, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(b.x, b.y, 2, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.restore();
+  });
+
+  // ---- CURSES (zombies) ----
+  state.zombies.forEach(z => {
+    const cx = z.x, cy = z.row*CELL+TOP_PAD+CELL/2;
+    const cd = z.cdef;
+    const sz = cd === CURSE_TYPES[2] ? 34 : cd === CURSE_TYPES[1] ? 30 : 26;
+
+    // Slow shimmer
+    if (z.slowTimer > 0) {
+      ctx.save();
+      ctx.globalAlpha = 0.3;
+      const sg = ctx.createRadialGradient(cx, cy, 0, cx, cy, sz+8);
+      sg.addColorStop(0, '#1a8cff');
+      sg.addColorStop(1, 'transparent');
+      ctx.fillStyle = sg;
+      ctx.beginPath(); ctx.arc(cx, cy, sz+8, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+
+    // Curse aura
+    ctx.save();
+    ctx.globalAlpha = 0.2 + Math.sin(state.frame * 0.07 + z.row) * 0.05;
+    const aura = ctx.createRadialGradient(cx, cy, 0, cx, cy, sz * 1.2);
+    aura.addColorStop(0, cd.glow);
+    aura.addColorStop(1, 'transparent');
+    ctx.fillStyle = aura;
+    ctx.beginPath(); ctx.arc(cx, cy, sz*1.2, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+
+    // Body card
+    ctx.fillStyle = cd.color + 'cc';
+    drawRoundRect(cx - sz/2, cy - sz/2, sz, sz, 6);
+    ctx.fill();
+    ctx.strokeStyle = cd.glow + 'cc';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Emoji
+    ctx.font = (sz - 4) + 'px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(cd.emoji, cx, cy);
+
+    // HP bar
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.fillRect(cx - sz/2, cy + sz/2 + 2, sz, 3);
+    ctx.fillStyle = cd.glow;
+    ctx.fillRect(cx - sz/2, cy + sz/2 + 2, sz * Math.max(0, z.hp/z.maxHp), 3);
+
+    // Special grade label
+    if (z.cdef === CURSE_TYPES[2]) {
+      ctx.font = 'bold 6px Rajdhani, sans-serif';
+      ctx.fillStyle = '#1a8cff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('SPECIAL', cx, cy - sz/2 - 5);
+    }
+  });
+
+  // ---- CE DROPS ----
+  state.sunDrops.forEach(s => {
+    ctx.save();
+    ctx.globalAlpha = Math.min(1, s.timer / 30);
+    // Glow
+    const sg = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 18);
+    sg.addColorStop(0, 'rgba(212,160,23,0.4)');
+    sg.addColorStop(1, 'transparent');
+    ctx.fillStyle = sg;
+    ctx.beginPath(); ctx.arc(s.x, s.y, 18, 0, Math.PI*2); ctx.fill();
+    ctx.font = '18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('✦', s.x, s.y);
+    ctx.restore();
+  });
+
+  // ---- BETWEEN WAVES OVERLAY ----
+  if (state.betweenWaves) {
+    ctx.fillStyle = 'rgba(10,6,18,0.72)';
+    ctx.fillRect(0, 0, W, H);
+
+    // Decorative lines
+    ctx.strokeStyle = 'rgba(212,160,23,0.3)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(W/2-180, H/2-22, 360, 44);
+    ctx.strokeStyle = 'rgba(212,160,23,0.1)';
+    ctx.strokeRect(W/2-176, H/2-18, 352, 36);
+
+    ctx.font = 'bold 16px Cinzel Decorative, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#d4a017';
+    ctx.fillText(`— Curse ${state.wave} Exorcised —`, W/2, H/2 - 6);
+    ctx.font = '12px Rajdhani, sans-serif';
+    ctx.fillStyle = '#9080b0';
+    ctx.fillText('Prepare for the next incursion...', W/2, H/2 + 12);
+  }
+
+  // ---- GAME OVER / WIN OVERLAY ----
+  if (state.over) {
+    ctx.fillStyle = 'rgba(10,6,18,0.78)';
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    if (state.won) {
+      ctx.font = 'bold 24px Cinzel Decorative, serif';
+      ctx.fillStyle = '#d4a017';
+      ctx.fillText('⛩ MISSION COMPLETE ⛩', W/2, H/2 - 18);
+      ctx.font = '13px Rajdhani, sans-serif';
+      ctx.fillStyle = '#a3e635';
+      ctx.fillText('All Curses have been exorcised. Tokyo is safe.', W/2, H/2 + 8);
+    } else {
+      ctx.font = 'bold 22px Cinzel Decorative, serif';
+      ctx.fillStyle = '#c0392b';
+      ctx.fillText('💀 BARRIER COLLAPSED 💀', W/2, H/2 - 18);
+      ctx.font = '13px Rajdhani, sans-serif';
+      ctx.fillStyle = '#f87171';
+      ctx.fillText('The Curses have broken through the barrier.', W/2, H/2 + 8);
+    }
+    ctx.font = '11px Rajdhani, sans-serif';
+    ctx.fillStyle = '#6050a0';
+    ctx.fillText('Click ↺ Restart to try again', W/2, H/2 + 28);
+  }
+
+  if (state.shakeTimer > 0) ctx.restore();
+}
+
 function togglePause() {
   if (state.over) return;
   state.paused = !state.paused;
   document.querySelector('#btn-row .ctrl').textContent = state.paused ? '▶ Resume' : '⏸ Pause';
-  setMsg(state.paused ? 'Paused — click Resume to continue.' : '');
+  setMsg(state.paused ? 'Paused — Sorcerers on standby.' : '');
 }
 
 function startGame() {
@@ -429,7 +841,7 @@ function startGame() {
   updateHUD();
   document.getElementById('wave-val').textContent = 1;
   document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
-  setMsg('Select a plant and click a lawn cell to place it!');
+  setMsg('Select a sorcerer and click a cell to deploy!');
   document.querySelector('#btn-row .ctrl').textContent = '⏸ Pause';
 }
 
