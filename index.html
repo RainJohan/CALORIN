@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plants vs Zombies - Block Edition</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #1a1a2e; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; padding: 20px; font-family: system-ui, sans-serif; color: #fff; }
+  h1 { font-size: 22px; margin-bottom: 12px; color: #fbbf24; letter-spacing: 1px; }
+  #hud { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+  #sun-display { background: #fbbf24; color: #78350f; border-radius: 20px; padding: 4px 14px; font-weight: 600; font-size: 14px; border: 1.5px solid #d97706; }
+  #wave-display { font-size: 13px; color: #a3e635; }
+  #lives-display { font-size: 13px; color: #f87171; margin-left: auto; }
+  #shop { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .plant-card { border: 1.5px solid #444; border-radius: 8px; padding: 6px 10px; font-size: 12px; cursor: pointer; background: #2a2a3e; color: #fff; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 68px; transition: border-color 0.15s, background 0.15s; }
+  .plant-card:hover { border-color: #888; background: #3a3a4e; }
+  .plant-card.selected { border-color: #22c55e; background: #14532d; color: #bbf7d0; }
+  .plant-card .cost { font-size: 11px; color: #fbbf24; font-weight: 600; }
+  .plant-card .icon { font-size: 20px; line-height: 1; }
+  #canvas-wrap { border-radius: 10px; overflow: hidden; border: 2px solid #444; }
+  canvas { display: block; }
+  #msg { text-align: center; font-size: 14px; color: #fbbf24; margin-top: 8px; min-height: 20px; }
+  #btn-row { display: flex; gap: 8px; margin-top: 10px; }
+  button.ctrl { padding: 7px 18px; border-radius: 8px; border: 1px solid #555; background: #2a2a3e; color: #fff; cursor: pointer; font-size: 13px; transition: background 0.15s; }
+  button.ctrl:hover { background: #3a3a4e; }
+  #instructions { margin-top: 14px; font-size: 12px; color: #888; max-width: 640px; text-align: center; line-height: 1.7; }
+  #instructions span { color: #a3e635; font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>🌻 Plants vs Zombies — Block Edition</h1>
+
+<div id="hud">
+  <div id="sun-display">☀️ <span id="sun-val">150</span></div>
+  <div id="wave-display">Wave <span id="wave-val">1</span> / 5</div>
+  <div id="lives-display">🏠 Lives: <span id="lives-val">5</span></div>
+</div>
+
+<div id="shop">
+  <div class="plant-card" data-type="sunflower" onclick="selectPlant('sunflower')">
+    <span class="icon">🌻</span><span>Shoko</span><span class="cost">☀️ 50</span>
+  </div>
+  <div class="plant-card" data-type="peashooter" onclick="selectPlant('peashooter')">
+    <span class="icon">🟢</span><span>Yuji</span><span class="cost">☀️ 100</span>
+  </div>
+  <div class="plant-card" data-type="wallnut" onclick="selectPlant('wallnut')">
+    <span class="icon">🌰</span><span>Todo</span><span class="cost">☀️ 50</span>
+  </div>
+  <div class="plant-card" data-type="snowpea" onclick="selectPlant('snowpea')">
+    <span class="icon">❄️</span><span>Gojo</span><span class="cost">☀️ 175</span>
+  </div>
+  <div class="plant-card" data-type="cherry" onclick="selectPlant('cherry')">
+    <span class="icon">🍒</span><span>Sukuna</span><span class="cost">☀️ 150</span>
+  </div>
+  <div class="plant-card" data-type="shovel" onclick="selectPlant('shovel')">
+    <span class="icon">⛏️</span><span>Shovel</span><span class="cost">free</span>
+  </div>
+</div>
+
+<div id="canvas-wrap"><canvas id="c"></canvas></div>
+<div id="msg">Select a plant and click a lawn cell to place it!</div>
+<div id="btn-row">
+  <button class="ctrl" onclick="togglePause()">⏸ Pause</button>
+  <button class="ctrl" onclick="startGame()">↺ Restart</button>
+</div>
+
+<div id="instructions">
+  <span>How to play:</span> Select a plant from the shop, then click any green cell to place it.
+  Click ☀️ sun drops to collect sun. Sunflowers generate extra sun over time.
+  Defend all 5 waves to win! Zombies get tougher each wave.
+  Use the <span>Shovel</span> to remove a plant from a cell.
+</div>
+
+<script>
+const COLS = 9, ROWS = 5;
+const CELL = 70, TOP_PAD = 10;
+const W = COLS * CELL, H = ROWS * CELL + TOP_PAD;
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+canvas.width = W; canvas.height = H;
+
+const PLANTS = {
+  sunflower:  { color: '#fbbf24', hp: 80,  cost: 50,  sunRate: 0.18, shoot: false },
+  peashooter: { color: '#22c55e', hp: 100, cost: 100, sunRate: 0,    shoot: true,  dmg: 20, speed: 3.5, slow: false },
+  wallnut:    { color: '#a16207', hp: 400, cost: 50,  sunRate: 0,    shoot: false },
+  snowpea:    { color: '#38bdf8', hp: 100, cost: 175, sunRate: 0,    shoot: true,  dmg: 18, speed: 3.5, slow: true },
+  cherry:     { color: '#ef4444', hp: 1,   cost: 150, sunRate: 0,    shoot: false, bomb: true },
+  shovel:     { color: null,      hp: 0,   cost: 0 }
+};
+
+let state = {};
+
+function initState() {
+  state = {
+    sun: 150, lives: 5, wave: 1, paused: false, over: false, won: false,
+    plants: [], zombies: [], bullets: [], sunDrops: [],
+    selected: null, frame: 0, sunTimer: 0,
+    waveTimer: 0, waveSpawned: 0, waveTotal: 5, waveDelay: 420,
+    waveStarted: false, betweenWaves: false, betweenTimer: 0,
+    maxWaves: 5
+  };
+}
+
+function selectPlant(type) {
+  if (state.over) return;
+  state.selected = type;
+  document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`[data-type="${type}"]`).classList.add('selected');
+}
+
+canvas.addEventListener('click', e => {
+  if (state.over || state.paused) return;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const mx = (e.clientX - rect.left) * scaleX;
+  const my = (e.clientY - rect.top) * scaleY;
+
+  // Check sun drops first
+  let collected = false;
+  state.sunDrops = state.sunDrops.filter(s => {
+    const dx = mx - s.x, dy = my - s.y;
+    if (Math.sqrt(dx*dx+dy*dy) < 18) { state.sun += s.val; updateHUD(); collected = true; return false; }
+    return true;
+  });
+  if (collected) return;
+
+  if (!state.selected) return;
+  const col = Math.floor(mx / CELL);
+  const row = Math.floor((my - TOP_PAD) / CELL);
+  if (col < 0 || col >= COLS || row < 0 || row >= ROWS) return;
+
+  if (state.selected === 'shovel') {
+    state.plants = state.plants.filter(p => !(p.col === col && p.row === row));
+    return;
+  }
+  const def = PLANTS[state.selected];
+  if (state.sun < def.cost) { setMsg('Not enough sun! ☀️'); return; }
+  if (state.plants.find(p => p.col === col && p.row === row)) { setMsg('Cell occupied!'); return; }
+
+  state.sun -= def.cost;
+  state.plants.push({
+    col, row, type: state.selected,
+    hp: def.hp, maxHp: def.hp,
+    shootTimer: 0, sunTimer: 0,
+    explodeTimer: def.bomb ? 90 : -1
+  });
+  if (def.bomb) setMsg('Cherry Bomb planted — BOOM in 3s!');
+  else setMsg('');
+  updateHUD();
+});
+
+function spawnZombie() {
+  const row = Math.floor(Math.random() * ROWS);
+  const wave = state.wave;
+  let hp = 80 + wave * 40;
+  let speed = 0.28 + Math.random() * 0.12;
+  let type = 'normal';
+  const r = Math.random();
+  if (wave >= 2 && r < 0.2) { hp *= 2.5; speed *= 0.75; type = 'cone'; }
+  if (wave >= 3 && r < 0.12) { hp *= 5; speed *= 0.6; type = 'bucket'; }
+  state.zombies.push({ x: W + 20, row, hp, maxHp: hp, speed, type, slowTimer: 0 });
+}
+
+function update() {
+  if (state.over || state.paused) return;
+  state.frame++;
+
+  // Natural sun drops
+  state.sunTimer++;
+  if (state.sunTimer > 280) {
+    state.sunTimer = 0;
+    state.sunDrops.push({ x: Math.random()*(W-60)+30, y: -10, vy: 1.2, val: 25, timer: 130 });
+  }
+
+  // Sunflower sun generation
+  state.plants.forEach(p => {
+    if (PLANTS[p.type].sunRate > 0) {
+      p.sunTimer++;
+      if (p.sunTimer > 60 / PLANTS[p.type].sunRate) {
+        p.sunTimer = 0;
+        state.sunDrops.push({ x: p.col*CELL+CELL/2, y: p.row*CELL+TOP_PAD, vy: 1.0, val: 25, timer: 110 });
+      }
+    }
+  });
+
+  // Sun drops fall & expire
+  state.sunDrops.forEach(s => { s.y += s.vy; s.timer--; });
+  state.sunDrops = state.sunDrops.filter(s => s.timer > 0);
+
+  // Wave spawning
+  if (!state.waveStarted && !state.betweenWaves) { state.waveStarted = true; state.waveSpawned = 0; state.waveTimer = 0; }
+  if (state.waveStarted && !state.betweenWaves) {
+    state.waveTimer++;
+    const interval = Math.max(55, state.waveDelay - state.wave * 20);
+    if (state.waveTimer >= interval && state.waveSpawned < state.waveTotal + state.wave * 2) {
+      spawnZombie(); state.waveSpawned++; state.waveTimer = 0;
+    }
+    if (state.waveSpawned >= state.waveTotal + state.wave * 2 && state.zombies.length === 0) {
+      if (state.wave >= state.maxWaves) { state.won = true; state.over = true; setMsg('🎉 You win! All waves cleared!'); return; }
+      state.betweenWaves = true; state.betweenTimer = 200; state.waveStarted = false;
+    }
+  }
+  if (state.betweenWaves) {
+    state.betweenTimer--;
+    if (state.betweenTimer <= 0) { state.wave++; state.betweenWaves = false; document.getElementById('wave-val').textContent = state.wave; }
+  }
+
+  // Cherry bomb countdown
+  state.plants.forEach(p => {
+    if (p.type === 'cherry' && p.explodeTimer > 0) {
+      p.explodeTimer--;
+      if (p.explodeTimer === 0) {
+        const cx = p.col*CELL+CELL/2, cy = p.row*CELL+TOP_PAD+CELL/2;
+        state.zombies = state.zombies.filter(z => {
+          const dist = Math.sqrt((z.x - cx)**2 + (z.row*CELL+TOP_PAD+CELL/2 - cy)**2);
+          return dist > CELL * 2;
+        });
+        state.plants = state.plants.filter(q => q !== p);
+        setMsg('💥 BOOM!');
+      }
+    }
+  });
+
+  // Shooting
+  state.plants.forEach(p => {
+    const def = PLANTS[p.type];
+    if (!def.shoot) return;
+    p.shootTimer++;
+    const hasTarget = state.zombies.some(z => z.row === p.row && z.x > p.col*CELL);
+    if (hasTarget && p.shootTimer > 55) {
+      p.shootTimer = 0;
+      state.bullets.push({ x: p.col*CELL+CELL, y: p.row*CELL+TOP_PAD+CELL/2, speed: def.speed, dmg: def.dmg, row: p.row, slow: def.slow });
+    }
+  });
+
+  // Move bullets, check hits
+  state.bullets.forEach(b => { b.x += b.speed; });
+  state.bullets = state.bullets.filter(b => b.x < W + 20);
+  state.bullets = state.bullets.filter(b => {
+    let hit = false;
+    for (const z of state.zombies) {
+      if (hit) break;
+      if (z.row === b.row && b.x >= z.x - CELL*0.4 && b.x <= z.x + CELL*0.15) {
+        z.hp -= b.dmg;
+        if (b.slow) z.slowTimer = 120;
+        hit = true;
+      }
+    }
+    return !hit;
+  });
+
+  // Move zombies, eat plants
+  state.zombies.forEach(z => {
+    const spd = z.slowTimer > 0 ? z.speed * 0.4 : z.speed;
+    if (z.slowTimer > 0) z.slowTimer--;
+    const blocking = state.plants.find(p => p.row === z.row && Math.abs(p.col*CELL + CELL/2 - z.x) < CELL*0.6);
+    if (blocking) {
+      blocking.hp -= 0.7;
+      if (blocking.hp <= 0) state.plants = state.plants.filter(q => q !== blocking);
+    } else {
+      z.x -= spd;
+    }
+    if (z.x < -10) { z.dead = true; state.lives--; if (state.lives <= 0) { state.over = true; setMsg('💀 Game Over! The zombies got through!'); } }
+  });
+  state.zombies = state.zombies.filter(z => z.hp > 0 && !z.dead);
+
+  updateHUD();
+}
+
+function updateHUD() {
+  document.getElementById('sun-val').textContent = Math.floor(state.sun);
+  document.getElementById('lives-val').textContent = state.lives;
+}
+
+function setMsg(t) { document.getElementById('msg').textContent = t; }
+
+const LANE_COLORS = ['#bbf7d0','#a7f3d0','#d9f99d','#fef08a','#bbf7d0'];
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Lawn grid
+  for (let r = 0; r < ROWS; r++) {
+    ctx.fillStyle = LANE_COLORS[r];
+    ctx.fillRect(0, r*CELL+TOP_PAD, W, CELL);
+    for (let c = 0; c < COLS; c++) {
+      ctx.strokeStyle = 'rgba(0,0,0,0.09)';
+      ctx.lineWidth = 0.5;
+      ctx.strokeRect(c*CELL, r*CELL+TOP_PAD, CELL, CELL);
+    }
+  }
+
+  // Soil strip at top
+  ctx.fillStyle = '#78350f';
+  ctx.fillRect(0, 0, W, TOP_PAD);
+
+  // Plants
+  state.plants.forEach(p => {
+    const def = PLANTS[p.type];
+    const x = p.col*CELL + 8, y = p.row*CELL + TOP_PAD + 8, s = CELL - 16;
+
+    // HP bar
+    ctx.fillStyle = '#fca5a5';
+    ctx.fillRect(x, y + s + 2, s, 4);
+    ctx.fillStyle = '#22c55e';
+    ctx.fillRect(x, y + s + 2, s * Math.max(0, p.hp / p.maxHp), 4);
+
+    // Pulse for cherry bomb
+    if (p.type === 'cherry' && p.explodeTimer > 0) {
+      ctx.globalAlpha = Math.sin(state.frame * 0.25) * 0.2 + 0.8;
+    }
+
+    ctx.fillStyle = def.color;
+    roundRect(ctx, x, y, s, s, 6);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Icon
+    const icons = {
+  shoko:'🌻',     // Sunflower
+  yuji:'🟢',      // Peashooter
+  todo:'🌰',      // Wall-nut
+  gojo:'❄️',      // Snow Pea
+  sukuna:'🍒'     // Cherry Bomb
+    };
+    ctx.font = '22px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(icons[p.type] || '', x + s/2, y + s/2);
+  });
+
+  // Bullets
+  state.bullets.forEach(b => {
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, 5, 0, Math.PI*2);
+    ctx.fillStyle = b.slow ? '#38bdf8' : '#16a34a';
+    ctx.fill();
+  });
+
+  // Zombies
+  state.zombies.forEach(z => {
+    const cx = z.x, cy = z.row*CELL+TOP_PAD+CELL/2;
+    const sizes = { normal: 28, cone: 32, bucket: 36 };
+    const sz = sizes[z.type] || 28;
+
+    // Slow glow
+    if (z.slowTimer > 0) {
+      ctx.fillStyle = 'rgba(56,189,248,0.25)';
+      ctx.beginPath();
+      ctx.arc(cx, cy, sz, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    // HP bar
+    ctx.fillStyle = '#7f1d1d';
+    ctx.fillRect(cx - sz/2, cy + sz/2 + 2, sz, 4);
+    ctx.fillStyle = '#dc2626';
+    ctx.fillRect(cx - sz/2, cy + sz/2 + 2, sz * Math.max(0, z.hp/z.maxHp), 4);
+
+    // Zombie body
+    const zColors = { normal: '#a3e635', cone: '#fb923c', bucket: '#94a3b8' };
+    ctx.fillStyle = zColors[z.type] || '#a3e635';
+    roundRect(ctx, cx - sz/2, cy - sz/2, sz, sz, 5);
+    ctx.fill();
+
+    ctx.font = sz + 'px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🧟', cx, cy);
+  });
+
+  // Sun drops
+  state.sunDrops.forEach(s => {
+    ctx.globalAlpha = Math.min(1, s.timer / 30);
+    ctx.font = '22px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('☀️', s.x, s.y);
+    ctx.globalAlpha = 1;
+  });
+
+  // Between-wave overlay
+  if (state.betweenWaves) {
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = 'bold 20px system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`Wave ${state.wave} cleared! Next wave incoming...`, W/2, H/2);
+  }
+
+  // Game over / win overlay
+  if (state.over) {
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.font = 'bold 28px system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = state.won ? '#fbbf24' : '#f87171';
+    ctx.fillText(state.won ? '🎉 YOU WIN!' : '💀 GAME OVER', W/2, H/2 - 16);
+    ctx.font = '16px system-ui';
+    ctx.fillStyle = '#ccc';
+    ctx.fillText('Click ↺ Restart to play again', W/2, H/2 + 20);
+  }
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y); ctx.arcTo(x+w, y, x+w, y+r, r);
+  ctx.lineTo(x+w, y+h-r); ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
+  ctx.lineTo(x+r, y+h); ctx.arcTo(x, y+h, x, y+h-r, r);
+  ctx.lineTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
+  ctx.closePath();
+}
+
+function togglePause() {
+  if (state.over) return;
+  state.paused = !state.paused;
+  document.querySelector('#btn-row .ctrl').textContent = state.paused ? '▶ Resume' : '⏸ Pause';
+  setMsg(state.paused ? 'Paused — click Resume to continue.' : '');
+}
+
+function startGame() {
+  initState();
+  updateHUD();
+  document.getElementById('wave-val').textContent = 1;
+  document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
+  setMsg('Select a plant and click a lawn cell to place it!');
+  document.querySelector('#btn-row .ctrl').textContent = '⏸ Pause';
+}
+
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+initState();
+loop();
+</script>
+</body>
+</html>
