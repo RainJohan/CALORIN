@@ -1092,7 +1092,18 @@ function initializeGame() {
   if(pauseBtn) pauseBtn.textContent='⏸ Pause';
 }
 
-function restartGame() { initializeGame(); }
+function isGameScreenVisible() {
+  return !document.getElementById('game-screen').classList.contains('hidden');
+}
+
+function shouldWarnAboutProgress() {
+  return isGameScreenVisible();
+}
+
+function restartGame() {
+  if (shouldWarnAboutProgress() && !confirm('Restart the game? Your current progress will be lost.')) return;
+  initializeGame();
+}
 
 function selectPlant(type) {
   if(state.over) return;
@@ -1327,10 +1338,17 @@ function togglePause() {
 }
 
 function backToMenu() {
+  if (shouldWarnAboutProgress() && !confirm('Go back to the main menu? Your current progress will be lost.')) return;
   document.getElementById('game-screen').classList.add('hidden');
   document.getElementById('voc-menu').classList.remove('hidden');
   showScreen('screen-main');
 }
+
+window.addEventListener('beforeunload', function (e) {
+  if (!shouldWarnAboutProgress()) return;
+  e.preventDefault();
+  e.returnValue = '';
+});
 
 initializeGame();
 gameLoop();
