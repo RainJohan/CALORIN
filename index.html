@@ -1239,11 +1239,40 @@ function drawPlant(p) {
 }
 
 function drawZombie(z) {
-  const x=z.x,y=z.row*CELL+TOP_PAD+CELL/2,bob=Math.sin(state.frame*0.12+z.x*0.03)*2.2,pulse=0.5+0.5*Math.sin(state.frame*0.08+z.x*0.02);
-  ctx.save();ctx.shadowBlur=18+pulse*8;ctx.shadowColor=z.cdef.glow;ctx.font='34px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(z.cdef.emoji,x,y+bob);ctx.restore();
-  const aura=ctx.createRadialGradient(x,y,2,x,y,26);aura.addColorStop(0,z.cdef.glow+'55');aura.addColorStop(1,'transparent');ctx.fillStyle=aura;ctx.beginPath();ctx.arc(x,y,26,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(x-22,y-30,44,5);ctx.fillStyle=z.slowTimer>0?'#8fd3ff':'#ff7070';ctx.fillRect(x-22,y-30,44*(z.hp/z.maxHp),5);
-  ctx.font='9px Rajdhani';ctx.fillStyle='rgba(255,255,255,0.7)';ctx.fillText(z.cdef.label,x,y+28);
+  const x = z.x;
+  const laneCenterY = z.row * CELL + TOP_PAD + CELL / 2;
+  const bob = Math.sin(state.frame * 0.12 + z.x * 0.03) * 2.2;
+  const drawY = laneCenterY + bob;
+  const pulse = 0.5 + 0.5 * Math.sin(state.frame * 0.08 + z.x * 0.02);
+
+  const aura = ctx.createRadialGradient(x, drawY, 2, x, drawY, 26);
+  aura.addColorStop(0, z.cdef.glow + '55');
+  aura.addColorStop(1, 'transparent');
+  ctx.fillStyle = aura;
+  ctx.beginPath();
+  ctx.arc(x, drawY, 26, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.save();
+  ctx.shadowBlur = 18 + pulse * 8;
+  ctx.shadowColor = z.cdef.glow;
+  ctx.font = '34px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(z.cdef.emoji, x, drawY);
+  ctx.restore();
+
+  const barY = drawY - 30;
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(x - 22, barY, 44, 5);
+  ctx.fillStyle = z.slowTimer > 0 ? '#8fd3ff' : '#ff7070';
+  ctx.fillRect(x - 22, barY, 44 * (z.hp / z.maxHp), 5);
+
+  ctx.font = '9px Rajdhani';
+  ctx.fillStyle = 'rgba(255,255,255,0.7)';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(z.cdef.label, x, drawY + 28);
 }
 
 function drawBullet(b) {
