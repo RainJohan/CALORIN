@@ -1105,6 +1105,11 @@ function restartGame() {
   initializeGame();
 }
 
+function clearSelectedPlant() {
+  state.selected=null;
+  document.querySelectorAll('.plant-card').forEach(c=>c.classList.remove('selected'));
+}
+
 function selectPlant(type) {
   if(state.over) return;
   state.selected=type;
@@ -1137,6 +1142,7 @@ canvas.addEventListener('click',e=>{
   state.plants.push({col:gc,row:gr,type:state.selected,hp:def.hp,maxHp:def.hp,shootTimer:0,sunTimer:0,explodeTimer:def.bomb?90:-1});
   if(def.bomb) setMsg('Sukuna activated — Malevolent Shrine in 3s!');
   else setMsg('');
+  clearSelectedPlant();
   updateHUD();
 });
 
