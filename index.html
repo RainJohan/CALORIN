@@ -106,6 +106,7 @@
   }
   #sun-display  { background: rgba(212,160,23,0.15); border: 1px solid rgba(212,160,23,0.4); color: var(--gold2); }
   #wave-display { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.4); color: #c084fc; }
+  #score-display{ background: rgba(26,140,255,0.15); border: 1px solid rgba(26,140,255,0.4); color: #7bb8ff; }
   #lives-display{ margin-left: auto; background: rgba(192,57,43,0.15); border: 1px solid rgba(192,57,43,0.4); color: #f87171; }
 
   #shop {
@@ -891,6 +892,7 @@
   <div id="hud">
     <div class="hud-pill" id="sun-display">✦ <span id="sun-val">150</span> CE</div>
     <div class="hud-pill" id="wave-display">⚔ Curse <span id="wave-val">1</span> / 5</div>
+    <div class="hud-pill" id="score-display">★ Score: <span id="score-val">0</span></div>
     <div class="hud-pill" id="lives-display">🏯 Barrier: <span id="lives-val">5</span></div>
   </div>
 
@@ -1058,9 +1060,9 @@ const ctx=canvas.getContext('2d');
 canvas.width=W; canvas.height=H;
 
 const CURSE_TYPES=[
-  {type:'weak',   emoji:'👁', label:'Weak Curse',   hpMult:1,   spMult:1,    color:'#5a3a7e',glow:'#7c3aed'},
-  {type:'finger', emoji:'🦷', label:'Finger Bearer',hpMult:2.5, spMult:0.75, color:'#8b1a1a',glow:'#c0392b'},
-  {type:'special',emoji:'👺', label:'Special Grade', hpMult:5,   spMult:0.6,  color:'#1a3a5a',glow:'#1a8cff'},
+  {type:'weak',   emoji:'👁', label:'Weak Curse',   hpMult:1,   spMult:1,    color:'#5a3a7e',glow:'#7c3aed', scoreValue:10},
+  {type:'finger', emoji:'🦷', label:'Finger Bearer',hpMult:2.5, spMult:0.75, color:'#8b1a1a',glow:'#c0392b', scoreValue:25},
+  {type:'special',emoji:'👺', label:'Special Grade', hpMult:5,   spMult:0.6,  color:'#1a3a5a',glow:'#1a8cff', scoreValue:50},
 ];
 
 const PLANTS={
@@ -1077,12 +1079,13 @@ const CHAR_ICONS={sunflower:'🌸',peashooter:'👊',wallnut:'🛡',snowpea:'♾
 let state={};
 
 function initState() {
-  state={sun:150,lives:5,wave:1,paused:false,over:false,won:false,plants:[],zombies:[],bullets:[],sunDrops:[],selected:null,frame:0,sunTimer:0,waveTimer:0,waveSpawned:0,waveTotal:5,waveDelay:420,waveStarted:false,betweenWaves:false,betweenTimer:0,maxWaves:5,shakeTimer:0};
+  state={sun:150,score:0,lives:5,wave:1,paused:false,over:false,won:false,plants:[],zombies:[],bullets:[],sunDrops:[],selected:null,frame:0,sunTimer:0,waveTimer:0,waveSpawned:0,waveTotal:5,waveDelay:420,waveStarted:false,betweenWaves:false,betweenTimer:0,maxWaves:5,shakeTimer:0};
 }
 
 function initializeGame() {
   initState(); updateHUD();
   document.getElementById('wave-val').textContent=1;
+  document.getElementById('score-val').textContent=0;
   document.querySelectorAll('.plant-card').forEach(c=>c.classList.remove('selected'));
   setMsg('Select a sorcerer and click a cell to deploy!');
   const pauseBtn=document.querySelector('#btn-row .ctrl');
@@ -1133,6 +1136,11 @@ function spawnZombie() {
   state.zombies.push({x:W+20,row,hp,maxHp:hp,speed,cdef,slowTimer:0});
 }
 
+function addScore(points) {
+  state.score += points;
+  updateHUD();
+}
+
 function update() {
   if(state.over||state.paused) return;
   state.frame++;
@@ -1177,13 +1185,23 @@ function update() {
     else{z.x-=spd;}
     if(z.x<-10){z.dead=true;state.lives--;if(state.lives<=0){state.over=true;setMsg('🔥 Barrier Broken! The Curses won...');}}
   });
-  state.zombies=state.zombies.filter(z=>z.hp>0&&!z.dead);
+  const remainingZombies=[];
+  for (const z of state.zombies) {
+    if (z.dead) continue;
+    if (z.hp <= 0) {
+      addScore(z.cdef.scoreValue || 0);
+      continue;
+    }
+    remainingZombies.push(z);
+  }
+  state.zombies = remainingZombies;
   if(state.shakeTimer>0)state.shakeTimer--;
   updateHUD();
 }
 
 function updateHUD() {
   document.getElementById('sun-val').textContent=Math.floor(state.sun);
+  document.getElementById('score-val').textContent=state.score;
   document.getElementById('lives-val').textContent=state.lives;
 }
 function setMsg(t){document.getElementById('msg').textContent=t;}
@@ -1255,7 +1273,20 @@ function render() {
   if(state.shakeTimer>0) ctx.restore();
   drawWaveBanner();
   if(state.paused){ctx.fillStyle='rgba(0,0,0,0.35)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#f5c842';ctx.font='700 28px Rajdhani';ctx.textAlign='center';ctx.fillText('PAUSED',W/2,H/2);}
-  if(state.over){ctx.fillStyle='rgba(0,0,0,0.45)';ctx.fillRect(0,0,W,H);ctx.fillStyle=state.won?'#f5c842':'#ff7070';ctx.font='700 28px Rajdhani';ctx.textAlign='center';ctx.fillText(state.won?'VICTORY':'DEFEAT',W/2,H/2-10);ctx.font='700 14px Rajdhani';ctx.fillStyle='#e8e0f0';ctx.fillText(state.won?'All curse waves survived.':'The barrier has fallen.',W/2,H/2+16);}
+  if(state.over){
+    ctx.fillStyle='rgba(0,0,0,0.45)';
+    ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=state.won?'#f5c842':'#ff7070';
+    ctx.font='700 28px Rajdhani';
+    ctx.textAlign='center';
+    ctx.fillText(state.won?'VICTORY':'DEFEAT',W/2,H/2-24);
+    ctx.font='700 14px Rajdhani';
+    ctx.fillStyle='#e8e0f0';
+    ctx.fillText(state.won?'All curse waves survived.':'The barrier has fallen.',W/2,H/2+2);
+    ctx.fillStyle='#7bb8ff';
+    ctx.font='700 18px Rajdhani';
+    ctx.fillText(`Final Score: ${state.score}`,W/2,H/2+34);
+  }
 }
 
 function gameLoop() { update(); render(); requestAnimationFrame(gameLoop); }
