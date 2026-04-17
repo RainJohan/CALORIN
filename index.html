@@ -1079,7 +1079,7 @@ const CHAR_ICONS={sunflower:'🌸',peashooter:'👊',wallnut:'🛡',snowpea:'♾
 let state={};
 
 function initState() {
-  state={sun:150,score:0,lives:5,wave:1,paused:false,over:false,won:false,plants:[],zombies:[],bullets:[],sunDrops:[],selected:null,frame:0,sunTimer:0,waveTimer:0,waveSpawned:0,waveTotal:5,waveDelay:420,waveStarted:false,betweenWaves:false,betweenTimer:0,maxWaves:5,shakeTimer:0};
+  state={sun:150,score:0,lives:5,wave:1,paused:false,over:false,won:false,plants:[],zombies:[],bullets:[],sunDrops:[],selected:null,frame:0,sunTimer:0,waveTimer:0,waveSpawned:0,waveTotal:5,waveDelay:420,waveStarted:false,betweenWaves:false,betweenTimer:0,maxWaves:5,shakeTimer:0,spawnCooldown:90,recentSpawnRows:[]};
 }
 
 function initializeGame() {
@@ -1146,11 +1146,86 @@ canvas.addEventListener('click',e=>{
   updateHUD();
 });
 
+function getWaveEnemyCount(wave) {
+  const counts = [0, 6, 8, 10, 13, 16];
+  return counts[wave] || (16 + (wave - 5) * 3);
+}
+
+function getSpawnDelayRange(wave) {
+  const delays = {
+    1: { min: 420, max: 620 },
+    2: { min: 280, max: 390 },
+    3: { min: 230, max: 330 },
+    4: { min: 190, max: 275 },
+    5: { min: 155, max: 230 }
+  };
+  return delays[wave] || { min: 140, max: 210 };
+}
+
+function chooseSpawnRow() {
+  const laneCounts = Array.from({ length: ROWS }, (_, row) =>
+    state.zombies.filter(z => z.row === row).length
+  );
+  const lastRow = state.recentSpawnRows[state.recentSpawnRows.length - 1];
+  const prevRow = state.recentSpawnRows[state.recentSpawnRows.length - 2];
+  const weights = laneCounts.map((count, row) => {
+    let weight = Math.max(1, 4 - count);
+    if (row === lastRow) weight *= 0.35;
+    if (row === prevRow) weight *= 0.7;
+    return weight;
+  });
+  const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+  let roll = Math.random() * totalWeight;
+  for (let row = 0; row < ROWS; row++) {
+    roll -= weights[row];
+    if (roll <= 0) return row;
+  }
+  return Math.floor(Math.random() * ROWS);
+}
+
+function chooseCurseType(wave, spawnedCount, waveEnemyCount) {
+  const progress = spawnedCount / Math.max(1, waveEnemyCount - 1);
+  const specialChance = wave >= 3 ? Math.min(0.22, 0.04 + progress * 0.08 + (wave - 3) * 0.03) : 0;
+  const fingerChance = wave >= 2 ? Math.min(0.38, 0.14 + progress * 0.10 + (wave - 2) * 0.04) : 0;
+  const roll = Math.random();
+  if (wave >= 3 && roll < specialChance) return CURSE_TYPES[2];
+  if (wave >= 2 && roll < specialChance + fingerChance) return CURSE_TYPES[1];
+  return CURSE_TYPES[0];
+}
+
+function setNextSpawnCooldown() {
+  const range = getSpawnDelayRange(state.wave);
+  state.spawnCooldown = Math.floor(range.min + Math.random() * (range.max - range.min + 1));
+}
+
+function spawnLaneIsClear() {
+  const threshold = state.wave === 1 ? W - CELL * 1.8 : W - CELL * 1.15;
+  return !state.zombies.some(z => z.x > threshold);
+}
+
+function beginWave() {
+  state.waveStarted = true;
+  state.waveSpawned = 0;
+  state.spawnCooldown = state.wave === 1 ? 600 : 240;
+  state.recentSpawnRows = [];
+  if (state.wave === state.maxWaves) {
+    setMsg('⚠ A huge wave of curses is approaching!');
+  } else {
+    setMsg(state.wave === 1 ? '⏳ Prepare your defense! Curses arrive in 10 seconds.' : `⚔ Wave ${state.wave} begins!`);
+  }
+}
+
 function spawnZombie() {
-  const row=Math.floor(Math.random()*ROWS),wave=state.wave,r=Math.random();
-  let cdef=wave>=3&&r<0.12?CURSE_TYPES[2]:wave>=2&&r<0.2?CURSE_TYPES[1]:CURSE_TYPES[0];
-  let hp=(80+wave*40)*cdef.hpMult,speed=(0.28+Math.random()*0.12)*cdef.spMult;
-  state.zombies.push({x:W+20,row,hp,maxHp:hp,speed,cdef,slowTimer:0});
+  const wave = state.wave;
+  const waveEnemyCount = getWaveEnemyCount(wave);
+  const row = chooseSpawnRow();
+  const cdef = chooseCurseType(wave, state.waveSpawned, waveEnemyCount);
+  const hp = (80 + wave * 40) * cdef.hpMult;
+  const speed = (0.11 + Math.random() * 0.05) * cdef.spMult;
+  const spawnOffset = 30 + Math.random() * 45;
+  state.zombies.push({x:W + spawnOffset,row,hp,maxHp:hp,speed,cdef,slowTimer:0});
+  state.recentSpawnRows.push(row);
+  if (state.recentSpawnRows.length > 3) state.recentSpawnRows.shift();
 }
 
 function addScore(points) {
@@ -1168,14 +1243,18 @@ function update() {
   });
   state.sunDrops.forEach(s=>{s.y+=s.vy;s.timer--;});
   state.sunDrops=state.sunDrops.filter(s=>s.timer>0);
-  if(!state.waveStarted&&!state.betweenWaves){state.waveStarted=true;state.waveSpawned=0;state.waveTimer=0;}
+  if(!state.waveStarted&&!state.betweenWaves){beginWave();}
   if(state.waveStarted&&!state.betweenWaves){
-    state.waveTimer++;
-    const interval=Math.max(55,state.waveDelay-state.wave*20);
-    if(state.waveTimer>=interval&&state.waveSpawned<state.waveTotal+state.wave*2){spawnZombie();state.waveSpawned++;state.waveTimer=0;}
-    if(state.waveSpawned>=state.waveTotal+state.wave*2&&state.zombies.length===0){
+    const waveEnemyCount=getWaveEnemyCount(state.wave);
+    if(state.spawnCooldown>0) state.spawnCooldown--;
+    if(state.spawnCooldown<=0&&state.waveSpawned<waveEnemyCount&&spawnLaneIsClear()){
+      spawnZombie();
+      state.waveSpawned++;
+      setNextSpawnCooldown();
+    }
+    if(state.waveSpawned>=waveEnemyCount&&state.zombies.length===0){
       if(state.wave>=state.maxWaves){state.won=true;state.over=true;setMsg('⛩ All Curses Exorcised! Victory!');return;}
-      state.betweenWaves=true;state.betweenTimer=200;state.waveStarted=false;
+      state.betweenWaves=true;state.betweenTimer=220;state.waveStarted=false;
     }
   }
   if(state.betweenWaves){state.betweenTimer--;if(state.betweenTimer<=0){state.wave++;state.betweenWaves=false;document.getElementById('wave-val').textContent=state.wave;}}
