@@ -1178,9 +1178,9 @@
   <div id="msg">Select a sorcerer and click a cell to deploy!</div>
 
   <div id="btn-row">
-    <button class="ctrl" onclick="togglePause()">⏸ Pause</button>
-    <button class="ctrl" onclick="restartGame()">↺ Restart</button>
-    <button class="ctrl" onclick="backToMenu()">← Menu</button>
+    <button class="ctrl" id="pause-btn">⏸ Pause</button>
+    <button class="ctrl" id="restart-btn">↺ Reset Exorcism</button>
+    <button class="ctrl" id="menu-btn" onclick="backToMenu()">← Menu</button>
   </div>
 
   <div id="bottom">
@@ -1368,7 +1368,7 @@ const START_PREP_FRAMES = 20 * 60;
 let state={};
 
 function initState() {
-  state={sun:50,score:0,lives:5,wave:0,paused:false,over:false,won:false,plants:[],zombies:[],bullets:[],sunDrops:[],selected:null,frame:0,waveTimer:0,waveSpawned:0,waveTotal:5,waveDelay:420,waveStarted:false,betweenWaves:false,betweenTimer:0,maxWaves:5,shakeTimer:0,spawnCooldown:90,recentSpawnRows:[],skySunTimer:0,nextSkySunAt:getSkySunInterval(true),waveIntroTimer:0,waveBurstPending:0,waveBurstDelay:0,prepareTimer:START_PREP_FRAMES};
+  state={sun:50,score:0,lives:5,wave:0,paused:false,over:false,won:false,plants:[],zombies:[],bullets:[],sunDrops:[],selected:null,frame:0,waveTimer:0,waveSpawned:0,waveTotal:5,waveDelay:420,waveStarted:false,betweenWaves:false,betweenTimer:0,maxWaves:5,shakeTimer:0,spawnCooldown:90,recentSpawnRows:[],skySunTimer:0,nextSkySunAt:getSkySunInterval(true),waveIntroTimer:0,waveBurstPending:0,waveBurstDelay:0,prepareTimer:START_PREP_FRAMES,restartFlash:0};
 }
 
 function initializeGame() {
@@ -1377,11 +1377,18 @@ function initializeGame() {
   updateHUD();
   document.getElementById('wave-val').textContent=1;
   document.getElementById('score-val').textContent=0;
+  document.getElementById('lives-val').textContent=state.lives;
+  document.getElementById('sun-val').textContent=Math.floor(state.sun);
   document.querySelectorAll('.plant-card').forEach(c=>c.classList.remove('selected'));
   updateRemoveToggleUI();
   setMsg('You have 20 secs to prepare your defense.');
-  const pauseBtn=document.querySelector('#btn-row .ctrl');
+  const pauseBtn=document.getElementById('pause-btn');
   if(pauseBtn) pauseBtn.textContent='⏸ Pause';
+}
+
+function hardResetGameFromStart() {
+  initializeGame();
+  render();
 }
 
 function isGameScreenVisible() {
@@ -1392,9 +1399,17 @@ function shouldWarnAboutProgress() {
   return isGameScreenVisible();
 }
 
+function triggerRestartFlash() {
+  state.restartFlash = 16;
+}
+
 function restartGame() {
-  if (shouldWarnAboutProgress() && !confirm('Restart the game? Your current progress will be lost.')) return;
-  initializeGame();
+  stopGameLoop();
+  hardResetGameFromStart();
+  triggerRestartFlash();
+  render();
+  startGameLoop();
+  setMsg('⛩ Exorcism restarted from the beginning. You have 20 secs to prepare.');
 }
 
 function updateRemoveToggleUI() {
@@ -1818,6 +1833,7 @@ function update() {
   }
   state.zombies = remainingZombies;
   if(state.shakeTimer>0)state.shakeTimer--;
+  if(state.restartFlash>0)state.restartFlash--;
   updateHUD();
 }
 
@@ -2762,16 +2778,35 @@ function render() {
   }
 }
 
-function gameLoop() { update(); render(); requestAnimationFrame(gameLoop); }
+let gameLoopHandle = null;
+
+function gameLoop() {
+  update();
+  render();
+  gameLoopHandle = requestAnimationFrame(gameLoop);
+}
+
+function stopGameLoop() {
+  if (gameLoopHandle !== null) {
+    cancelAnimationFrame(gameLoopHandle);
+    gameLoopHandle = null;
+  }
+}
+
+function startGameLoop() {
+  stopGameLoop();
+  gameLoop();
+}
 
 function togglePause() {
   state.paused=!state.paused;
-  const btn=document.querySelector('#btn-row .ctrl');
+  const btn=document.getElementById('pause-btn');
   if(btn) btn.textContent=state.paused?'▶ Resume':'⏸ Pause';
 }
 
 function backToMenu() {
   if (shouldWarnAboutProgress() && !confirm('Go back to the main menu? Your current progress will be lost.')) return;
+  stopGameLoop();
   document.getElementById('game-screen').classList.add('hidden');
   document.getElementById('voc-menu').classList.remove('hidden');
   showScreen('screen-main');
@@ -2783,8 +2818,8 @@ window.addEventListener('beforeunload', function (e) {
   e.returnValue = '';
 });
 
-initializeGame();
-gameLoop();
+hardResetGameFromStart();
+render();
 
 /* ============================================================
    MENU BACKGROUND
@@ -2831,10 +2866,24 @@ function showScreen(id) {
 }
 
 function openGame() {
+  stopGameLoop();
   document.getElementById('voc-menu').classList.add('hidden');
   document.getElementById('game-screen').classList.remove('hidden');
-  initializeGame();
+  hardResetGameFromStart();
+  render();
+  startGameLoop();
 }
+
+const restartBtn=document.getElementById('restart-btn');
+if(restartBtn) restartBtn.addEventListener('click', function(ev){
+  ev.preventDefault();
+  restartGame();
+});
+const pauseBtnInit=document.getElementById('pause-btn');
+if(pauseBtnInit) pauseBtnInit.addEventListener('click', function(ev){
+  ev.preventDefault();
+  togglePause();
+});
 
 // Init: show main screen
 showScreen('screen-main');
