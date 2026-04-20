@@ -174,6 +174,9 @@
     background-position: center bottom;
     background-size: contain;
     filter: drop-shadow(0 3px 8px rgba(0,0,0,0.35));
+    transform: scaleX(-1) rotate(-2deg);
+    transform-origin: center bottom;
+    transition: transform 0.18s ease, filter 0.18s ease;
   }
   .sprite-icon.shop {
     width: 48px;
@@ -2479,7 +2482,25 @@ function drawCharacterUnit(type, cx, cy, attackPulse = 0) {
     ctx.save();
     ctx.shadowBlur = 12 + attackPulse * 6;
     ctx.shadowColor = s.glow || '#ffffff';
-    ctx.drawImage(img, drawX, drawY, drawW, drawH);
+    ctx.translate(cx, 0);
+    ctx.scale(-1, 1);
+    ctx.rotate((-0.03 - attackPulse * 0.015) * (type === 'wallnut' ? 0.5 : 1));
+    ctx.drawImage(img, -drawW / 2 + 2, drawY, drawW, drawH);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalAlpha = 0.16 + attackPulse * 0.14;
+    ctx.strokeStyle = s.glow || '#ffffff';
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(cx + 12, cy - 14);
+    ctx.lineTo(cx + 28 + attackPulse * 10, cy - 22);
+    ctx.moveTo(cx + 14, cy - 2);
+    ctx.lineTo(cx + 34 + attackPulse * 12, cy - 6);
+    ctx.moveTo(cx + 12, cy + 10);
+    ctx.lineTo(cx + 26 + attackPulse * 8, cy + 14);
+    ctx.stroke();
     ctx.restore();
 
     ctx.save();
