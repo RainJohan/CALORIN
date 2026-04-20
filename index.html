@@ -1724,57 +1724,211 @@ function drawRoundRect(x,y,w,h,r){
 }
 
 function drawBarrierStructure() {
-  const barrierTop = TOP_PAD + 10;
-  const barrierHeight = H - TOP_PAD - 20;
-  const pulse = 0.72 + Math.sin(state.frame * 0.05) * 0.08;
-  const postLeft = 12;
-  const postRight = BOARD_X - 20;
-  const beamLeft = 6;
-  const beamRight = BOARD_X - 10;
-  const veilX = BOARD_X - 24;
+  const barrierTop = TOP_PAD + 8;
+  const barrierBottom = H - 10;
+  const barrierHeight = barrierBottom - barrierTop;
+  const centerY = barrierTop + barrierHeight / 2;
+  const pulse = 0.78 + Math.sin(state.frame * 0.055) * 0.12;
+  const integrity = Math.max(0, state.lives / 5);
+  const danger = 1 - integrity;
 
-  ctx.fillStyle = '#4a2028';
-  ctx.fillRect(postLeft, barrierTop + 18, 10, barrierHeight - 36);
-  ctx.fillRect(postRight, barrierTop + 18, 10, barrierHeight - 36);
-  ctx.fillStyle = '#72323d';
-  ctx.fillRect(postLeft + 2, barrierTop + 18, 3, barrierHeight - 36);
-  ctx.fillRect(postRight + 2, barrierTop + 18, 3, barrierHeight - 36);
+  const toriiLeft = 8;
+  const toriiRight = 56;
+  const postW = 10;
+  const postTop = barrierTop + 24;
+  const postBottom = barrierBottom - 18;
+  const lintelLeft = 2;
+  const lintelRight = BOARD_X - 10;
+  const veilX = BOARD_X - 28;
+  const veilW = 28;
+  const coreX = veilX + veilW / 2;
+  const ropeY = barrierTop + 86;
 
-  ctx.fillStyle = '#5d232d';
-  ctx.fillRect(beamLeft, barrierTop + 8, beamRight - beamLeft, 12);
-  ctx.fillStyle = '#8b4955';
-  ctx.fillRect(beamLeft + 4, barrierTop + 8, beamRight - beamLeft - 8, 4);
+  const runes = ['咒', '術', '縛', '界', '封', '赫', '蒼', '廻'];
 
-  ctx.fillStyle = '#3a3542';
-  ctx.fillRect(beamLeft, H - 30, beamRight - beamLeft, 12);
-  ctx.fillStyle = '#5e5968';
-  ctx.fillRect(beamLeft + 4, H - 30, beamRight - beamLeft - 8, 4);
+  ctx.save();
 
-  const veilGrad = ctx.createLinearGradient(veilX, 0, veilX + 20, 0);
-  veilGrad.addColorStop(0, 'rgba(236,247,255,0.06)');
-  veilGrad.addColorStop(0.28, `rgba(164,234,255,${0.18 * pulse})`);
-  veilGrad.addColorStop(0.6, `rgba(124,58,237,${0.28 * pulse})`);
-  veilGrad.addColorStop(1, 'rgba(22,16,48,0.08)');
+  const backAura = ctx.createRadialGradient(coreX - 8, centerY, 10, coreX - 8, centerY, 86);
+  backAura.addColorStop(0, `rgba(124,58,237,${0.18 + danger * 0.08})`);
+  backAura.addColorStop(0.38, `rgba(38,148,255,${0.08 + pulse * 0.05})`);
+  backAura.addColorStop(1, 'rgba(124,58,237,0)');
+  ctx.fillStyle = backAura;
+  ctx.beginPath();
+  ctx.arc(coreX - 8, centerY, 86, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#5b1822';
+  ctx.fillRect(toriiLeft, postTop, postW, postBottom - postTop);
+  ctx.fillRect(toriiRight, postTop, postW, postBottom - postTop);
+  ctx.fillStyle = '#922736';
+  ctx.fillRect(toriiLeft + 2, postTop, 3, postBottom - postTop);
+  ctx.fillRect(toriiRight + 2, postTop, 3, postBottom - postTop);
+  ctx.fillStyle = '#d19e57';
+  ctx.fillRect(toriiLeft, postTop, postW, 4);
+  ctx.fillRect(toriiRight, postTop, postW, 4);
+
+  const beamGrad = ctx.createLinearGradient(lintelLeft, barrierTop, lintelRight, barrierTop);
+  beamGrad.addColorStop(0, '#6d1b29');
+  beamGrad.addColorStop(0.5, '#a52d3b');
+  beamGrad.addColorStop(1, '#6d1b29');
+  ctx.fillStyle = beamGrad;
+  ctx.fillRect(lintelLeft, barrierTop + 6, lintelRight - lintelLeft, 12);
+  ctx.fillRect(6, barrierTop + 18, BOARD_X - 22, 7);
+  ctx.fillStyle = 'rgba(255,255,255,0.15)';
+  ctx.fillRect(lintelLeft + 4, barrierTop + 8, lintelRight - lintelLeft - 8, 2);
+  ctx.fillStyle = '#d19e57';
+  ctx.fillRect(10, barrierTop + 18, BOARD_X - 30, 2);
+
+  ctx.strokeStyle = `rgba(238,198,120,${0.38 + pulse * 0.08})`;
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  ctx.moveTo(16, ropeY);
+  for (let x = 16; x <= BOARD_X - 20; x += 7) {
+    ctx.lineTo(x, ropeY + Math.sin((x + state.frame * 1.2) * 0.12) * 2.6);
+  }
+  ctx.stroke();
+
+  for (let i = 0; i < 5; i++) {
+    const ofudaX = 18 + i * 10;
+    const sway = Math.sin(state.frame * 0.05 + i * 0.9) * 1.5;
+    const ofudaY = ropeY + 2;
+    ctx.save();
+    ctx.translate(ofudaX, ofudaY);
+    ctx.rotate(sway * 0.04);
+    const tagGrad = ctx.createLinearGradient(0, 0, 0, 22);
+    tagGrad.addColorStop(0, '#f6e8bf');
+    tagGrad.addColorStop(1, '#d7c28d');
+    ctx.fillStyle = tagGrad;
+    drawRoundRect(-4, 0, 8, 22, 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(80,42,26,0.55)';
+    ctx.lineWidth = 0.8;
+    drawRoundRect(-4, 0, 8, 22, 2);
+    ctx.stroke();
+    ctx.fillStyle = '#7f1d1d';
+    ctx.font = '700 7px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('封', 0, 3);
+    ctx.fillText('呪', 0, 10);
+    ctx.restore();
+  }
+
+  const sealR = 15 + Math.sin(state.frame * 0.04) * 1.4;
+  ctx.save();
+  ctx.translate(34, centerY);
+  ctx.rotate(state.frame * 0.01);
+  ctx.strokeStyle = `rgba(110,220,255,${0.26 + pulse * 0.1})`;
+  ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  ctx.arc(0, 0, sealR + 8, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.strokeStyle = `rgba(245,200,66,${0.36 + pulse * 0.1})`;
+  ctx.beginPath();
+  ctx.arc(0, 0, sealR, 0, Math.PI * 2);
+  ctx.stroke();
+  for (let i = 0; i < 6; i++) {
+    const a = (Math.PI * 2 * i) / 6;
+    const rx = Math.cos(a) * (sealR + 4);
+    const ry = Math.sin(a) * (sealR + 4);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(rx, ry);
+    ctx.stroke();
+  }
+  ctx.fillStyle = `rgba(235,245,255,${0.8 + pulse * 0.12})`;
+  ctx.font = '700 17px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('⛩', 0, 0);
+  ctx.restore();
+
+  const veilGrad = ctx.createLinearGradient(veilX, 0, veilX + veilW, 0);
+  veilGrad.addColorStop(0, 'rgba(225,245,255,0.04)');
+  veilGrad.addColorStop(0.18, `rgba(120,232,255,${0.15 + pulse * 0.05})`);
+  veilGrad.addColorStop(0.52, `rgba(124,58,237,${0.22 + pulse * 0.1})`);
+  veilGrad.addColorStop(0.84, `rgba(41,24,91,${0.26 + danger * 0.1})`);
+  veilGrad.addColorStop(1, 'rgba(8,6,20,0.08)');
   ctx.fillStyle = veilGrad;
-  ctx.fillRect(veilX, barrierTop, 20, barrierHeight);
+  ctx.fillRect(veilX, barrierTop, veilW, barrierHeight);
 
-  for (let y = barrierTop + 10; y < barrierTop + barrierHeight; y += 14) {
-    ctx.strokeStyle = `rgba(220,245,255,${0.11 + Math.sin((state.frame + y) * 0.05) * 0.02})`;
+  const innerGlow = ctx.createLinearGradient(veilX + 2, 0, veilX + veilW - 2, 0);
+  innerGlow.addColorStop(0, 'rgba(255,255,255,0)');
+  innerGlow.addColorStop(0.45, `rgba(199,246,255,${0.09 + pulse * 0.05})`);
+  innerGlow.addColorStop(0.55, `rgba(199,246,255,${0.18 + pulse * 0.08})`);
+  innerGlow.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = innerGlow;
+  ctx.fillRect(veilX + 2, barrierTop, veilW - 4, barrierHeight);
+
+  for (let y = barrierTop + 10; y < barrierBottom - 8; y += 11) {
+    const wave = Math.sin((state.frame + y * 1.8) * 0.075) * 3.8;
+    ctx.strokeStyle = `rgba(215,249,255,${0.08 + pulse * 0.04})`;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(veilX + 1, y);
-    ctx.lineTo(veilX + 19, y + 5);
+    ctx.moveTo(veilX + 2, y);
+    ctx.bezierCurveTo(veilX + 8 + wave, y + 3, veilX + 18 - wave, y + 5, veilX + veilW - 2, y + 8);
     ctx.stroke();
   }
 
-  const ripple = ctx.createRadialGradient(veilX + 10, H / 2, 2, veilX + 10, H / 2, 40);
-  ripple.addColorStop(0, `rgba(198,245,255,${0.18 * pulse})`);
-  ripple.addColorStop(0.45, `rgba(124,58,237,${0.08 * pulse})`);
-  ripple.addColorStop(1, 'rgba(124,58,237,0)');
-  ctx.fillStyle = ripple;
+  for (let i = 0; i < 8; i++) {
+    const y = barrierTop + 18 + i * ((barrierHeight - 36) / 7);
+    const glyph = runes[i % runes.length];
+    ctx.save();
+    ctx.globalAlpha = 0.22 + Math.sin(state.frame * 0.04 + i) * 0.05;
+    ctx.fillStyle = i % 2 === 0 ? '#c7f7ff' : '#f5c842';
+    ctx.font = '12px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(glyph, coreX, y);
+    ctx.restore();
+  }
+
+  ctx.strokeStyle = `rgba(85,220,255,${0.45 + pulse * 0.12})`;
+  ctx.lineWidth = 1.6;
   ctx.beginPath();
-  ctx.arc(veilX + 10, H / 2, 40, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.moveTo(veilX + 2, barrierTop);
+  ctx.lineTo(veilX + 2, barrierBottom);
+  ctx.stroke();
+  ctx.strokeStyle = `rgba(245,200,66,${0.22 + pulse * 0.08})`;
+  ctx.beginPath();
+  ctx.moveTo(veilX + veilW - 2, barrierTop);
+  ctx.lineTo(veilX + veilW - 2, barrierBottom);
+  ctx.stroke();
+
+  for (let i = 0; i < 10; i++) {
+    const sy = barrierTop + 16 + i * ((barrierHeight - 32) / 9);
+    const sparkX = veilX + 3 + Math.sin(state.frame * 0.09 + i * 0.6) * 2;
+    ctx.fillStyle = i % 2 === 0
+      ? `rgba(110,230,255,${0.34 + pulse * 0.1})`
+      : `rgba(245,200,66,${0.18 + pulse * 0.08})`;
+    ctx.beginPath();
+    ctx.arc(sparkX, sy, 1.8 + (i % 3) * 0.25, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  if (danger > 0.08) {
+    ctx.strokeStyle = `rgba(255,96,96,${0.16 + danger * 0.28})`;
+    ctx.lineWidth = 1.3;
+    for (let i = 0; i < Math.ceil(2 + danger * 6); i++) {
+      const startY = barrierTop + 24 + i * ((barrierHeight - 48) / Math.max(1, 1 + danger * 5));
+      ctx.beginPath();
+      ctx.moveTo(veilX + 8 + (i % 2) * 4, startY);
+      ctx.lineTo(veilX + 14 - (i % 2) * 2, startY + 8);
+      ctx.lineTo(veilX + 9 + (i % 3), startY + 16);
+      ctx.lineTo(veilX + 17 - (i % 2) * 3, startY + 24);
+      ctx.stroke();
+    }
+  }
+
+  const floorGrad = ctx.createLinearGradient(0, barrierBottom - 16, 0, barrierBottom + 10);
+  floorGrad.addColorStop(0, 'rgba(80,70,96,0.65)');
+  floorGrad.addColorStop(1, 'rgba(24,20,34,0.92)');
+  ctx.fillStyle = floorGrad;
+  ctx.fillRect(0, barrierBottom - 16, BOARD_X - 8, 18);
+  ctx.fillStyle = 'rgba(255,255,255,0.08)';
+  ctx.fillRect(4, barrierBottom - 16, BOARD_X - 16, 2);
+
+  ctx.restore();
 }
 
 function drawGameBackground() {
