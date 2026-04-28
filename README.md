@@ -79,3 +79,11 @@ Protect the barrier by placing sorcerers wisely, collecting cursed energy, and d
 - Do not spend all your CE at once. Try to balance attacking, defending, and saving for stronger units.
 
 **GOODLUCK**
+
+Game Screenshots:
+
+![image Alt](https://github.com/RainJohan/CALORIN/blob/1f4221e01b23058339461af5a0ff62d2122bd89d/Main%20Menu.png)
+
+![image Alt](https://github.com/RainJohan/CALORIN/blob/4cb45d21ce145ce231f8e276fd16338e99449b01/HTP%20Menu.png)
+
+![image Alt](https://github.com/RainJohan/CALORIN/blob/4cb45d21ce145ce231f8e276fd16338e99449b01/Main%20Game.png)
